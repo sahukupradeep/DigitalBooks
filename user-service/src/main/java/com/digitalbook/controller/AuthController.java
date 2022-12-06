@@ -31,6 +31,7 @@ import com.digitalbook.repository.RoleRepository;
 import com.digitalbook.repository.UserRepository;
 import com.digitalbook.security.jwt.JwtUtils;
 import com.digitalbook.security.services.UserDetailsImpl;
+import com.digitalbook.util.ConstantValueUtil;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -70,7 +71,7 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-		System.out.println("AuthController.registerUser()  "+signUpRequest);
+		System.out.println("AuthController.registerUser()  " + signUpRequest);
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
 		}
@@ -93,13 +94,13 @@ public class AuthController {
 		} else {
 			strRoles.forEach(role -> {
 				switch (role) {
-				case "author":
+				case ConstantValueUtil.AUTHOR:
 					Role adminRole = roleRepository.findByName(ERole.ROLE_AUTHOR)
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 					roles.add(adminRole);
 
 					break;
-				case "reader":
+				case ConstantValueUtil.READER:
 					Role modRole = roleRepository.findByName(ERole.ROLE_READER)
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 					roles.add(modRole);

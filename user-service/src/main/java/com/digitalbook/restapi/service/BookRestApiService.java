@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import com.digitalbook.payload.request.Book;
 import com.digitalbook.payload.response.MessageResponse;
 import com.digitalbook.util.CommonRestApiUrl;
-import com.digitalbook.util.StringUtil;
+import com.digitalbook.util.CommonStringUtil;
 
 @Service
 public class BookRestApiService {
@@ -27,6 +27,9 @@ public class BookRestApiService {
 
 	@Autowired
 	private CommonRestApiUrl commonRestApiUrl;
+
+	@Autowired
+	CommonStringUtil commonStringUtil;
 
 	public ResponseEntity<MessageResponse> createBook(Book book) {
 
@@ -54,8 +57,8 @@ public class BookRestApiService {
 		logger.info(" blockBook() {} " + bookId);
 		ResponseEntity<MessageResponse> response = null;
 
-		String url = StringUtil.replaceAll("authorId", "" + authorId,commonRestApiUrl.getBlockBookUrl());
-		url = StringUtil.replaceAll("bookId", "" + bookId,commonRestApiUrl.getBlockBookUrl());//url.replaceAll("bookId", "" + bookId);
+		String url = commonStringUtil.replaceAll("authorId", "" + authorId, commonRestApiUrl.getBlockBookUrl());
+		url = commonStringUtil.replaceAll("bookId", "" + bookId, commonRestApiUrl.getBlockBookUrl());
 
 		Map<String, Object> reqParam = new HashMap<>();
 

@@ -16,8 +16,8 @@ import org.springframework.web.client.RestTemplate;
 import com.digitalbook.payload.request.Book;
 import com.digitalbook.payload.response.MessageResponse;
 import com.digitalbook.util.CommonRestApiUrl;
+import com.digitalbook.util.CommonStringUtil;
 import com.digitalbook.util.ConstantValueUtil;
-import com.digitalbook.util.StringUtil;
 
 @SpringBootTest
 class BookRestApiServiceTest {
@@ -30,6 +30,9 @@ class BookRestApiServiceTest {
 
 	@MockBean
 	private CommonRestApiUrl commonRestApiUrlMock;
+
+	@MockBean
+	private CommonStringUtil commonStringUtilMock;
 
 	@Test
 	void createBookTest() {
@@ -67,24 +70,24 @@ class BookRestApiServiceTest {
 
 	}
 
-	/*@Test
+	@Test
 	void blockBookTest() throws Exception {
 
 		Book book = new Book();
 		String block = ConstantValueUtil.BLOCK;
 		String url = "http://localhost:8081/api/book/author/1/book/1?bolck" + block;
 
-		ResponseEntity<MessageResponse> response = ResponseEntity.ok(new MessageResponse("Book blocked successfully!"));
+		ResponseEntity<MessageResponse> response =null;
 
 		when(commonRestApiUrlMock.getUpdateBookUrl()).thenReturn(url);
 
-		when(StringUtil.replaceAll(" ", "", url)).thenReturn(url);
+		when(commonStringUtilMock.replaceAll(" ", "", url)).thenReturn(url);
 
 		when(restTemplateMock.postForEntity(url, book, MessageResponse.class)).thenReturn(response);
 
 		Assertions.assertEquals(response, bookRestApiService.blockBook(1, 1, block));
 
-	}*/
+	}
 
 	@Test
 	void searchBookTest() throws Exception {
