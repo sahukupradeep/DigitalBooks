@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.digitalbook.payload.request.Book;
+import com.digitalbook.payload.request.BookSub;
 import com.digitalbook.payload.response.MessageResponse;
 import com.digitalbook.restapi.service.BookRestApiService;
 import com.digitalbook.validator.BookValidator;
@@ -79,6 +80,30 @@ public class BookController {
 
 		logger.info(" searchBook() {}");
 		ResponseEntity<List> responseEntity = bookRestApiService.searchBook(category, title, author, price, publisher);
+
+		return responseEntity;
+
+	}
+
+	@PostMapping("readers/{bookId}/subscribe")
+	@PreAuthorize("hasRole('READER')")
+	public ResponseEntity<MessageResponse> subscribeBook(@Valid @RequestBody BookSub bookSub,
+			@PathVariable Integer bookId) {
+
+		logger.info(" subscribeBook() {}" + bookSub);
+
+		ResponseEntity<MessageResponse> responseEntity = bookRestApiService.subscribeBook(bookSub);
+
+		return responseEntity;
+
+	}
+
+	@GetMapping("readers/{emailId}/books")
+	@PreAuthorize("hasRole('READER')")
+	public ResponseEntity<List> getAllReaderBook(@PathVariable String emailId) {
+
+		logger.info(" getAllReaderBook() {}");
+		ResponseEntity<List> responseEntity = bookRestApiService.getAllReaderBook(emailId);
 
 		return responseEntity;
 

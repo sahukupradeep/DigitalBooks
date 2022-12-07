@@ -21,11 +21,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.digitalbook.UserServiceApplication;
 import com.digitalbook.payload.request.Book;
+import com.digitalbook.payload.request.BookSub;
 import com.digitalbook.payload.response.MessageResponse;
 import com.digitalbook.restapi.service.BookRestApiService;
 import com.digitalbook.util.ConstantValueUtil;
@@ -46,6 +48,7 @@ class BookControllerTest {
 		this.mockMvc = webAppContextSetup(webApplicationContext).build();
 	}
 
+	@WithMockUser(roles = "AUTHOR")
 	@Test
 	void createBookTest() throws Exception {
 
@@ -63,6 +66,7 @@ class BookControllerTest {
 
 	}
 
+	@WithMockUser(roles = "AUTHOR")
 	@Test
 	void updateBookTest() throws Exception {
 
@@ -79,6 +83,7 @@ class BookControllerTest {
 
 	}
 
+	@WithMockUser(roles = "AUTHOR")
 	@Test
 	void blockBookTestYes() throws Exception {
 		String block = ConstantValueUtil.BLOCK;
@@ -92,6 +97,7 @@ class BookControllerTest {
 
 	}
 
+	@WithMockUser(roles = "AUTHOR")
 	@Test
 	void blockBookTestNo() throws Exception {
 		String block = ConstantValueUtil.UN_BLOCK;
@@ -106,6 +112,7 @@ class BookControllerTest {
 
 	}
 
+	@WithMockUser(roles = {"AUTHOR","GUEST","READER"})
 	@Test
 	void getByRequestTest() throws Exception {
 		ResponseEntity<List> response = ResponseEntity.ok(List.of());
@@ -114,6 +121,22 @@ class BookControllerTest {
 		mockMvc.perform(
 				get("/api/v1/digitalbooks/search?category=category&title=title&author=1&price=4.0&publisher=publisher"))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+	}
+
+	@WithMockUser(roles = "READER")
+	@Test
+	void subscribeBookTest() throws Exception {
+
+		ResponseEntity<MessageResponse> response = ResponseEntity.status(HttpStatus.CREATED)
+				.body(new MessageResponse("Book subscribed successfully!"));
+
+		when(bookRestApiServiceMock.subscribeBook(any(BookSub.class))).thenReturn(response);
+
+		mockMvc.perform(post("/api/v1/digitalbooks/readers/2/subscribe").contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"bookId\": 1, \"readerId\": 2,\"active\":true}")).andExpect(status().isCreated())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.message").value("Book subscribed successfully!"));
 
 	}
 

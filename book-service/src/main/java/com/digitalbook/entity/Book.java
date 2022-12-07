@@ -149,13 +149,4 @@ public class Book implements Serializable {
 		this.updatedDate = updatedDate;
 	}
 
-	@Override
-	public String toString() {
-		return "Book [id=" + id + ", logo=" + logo + ", title=" + title + ", category=" + category + ", price=" + price
-				+ ", authorId=" + authorId + ", publisher=" + publisher + ", publishedDate=" + publishedDate
-				+ ", content=" + content + ", active=" + active + ", createdDate=" + createdDate + ", updatedDate="
-				+ updatedDate + "]";
-	}
-	
-
 }

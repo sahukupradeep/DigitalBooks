@@ -93,7 +93,7 @@ class BookControllerTest {
 
 	@Test
 	void getByRequestTest() throws Exception {
-		when(bookServiceMock.getByRequest("category", "title",1, 4.0, "publisher")).thenReturn(List.of(new Book()));
+		when(bookServiceMock.getByRequest("category", "title", 1, 4.0, "publisher")).thenReturn(List.of(new Book()));
 
 		mockMvc.perform(get("/api/book/search?category=category&title=title&author=1&price=4.0&publisher=publisher"))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON));

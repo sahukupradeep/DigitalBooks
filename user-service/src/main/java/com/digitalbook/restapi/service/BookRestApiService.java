@@ -3,6 +3,7 @@ package com.digitalbook.restapi.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.digitalbook.entity.User;
+import com.digitalbook.exception.RequestNotFounException;
 import com.digitalbook.payload.request.Book;
+import com.digitalbook.payload.request.BookSub;
 import com.digitalbook.payload.response.MessageResponse;
+import com.digitalbook.repository.UserRepository;
 import com.digitalbook.util.CommonRestApiUrl;
 import com.digitalbook.util.CommonStringUtil;
 
@@ -29,11 +34,21 @@ public class BookRestApiService {
 	private CommonRestApiUrl commonRestApiUrl;
 
 	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
 	CommonStringUtil commonStringUtil;
 
 	public ResponseEntity<MessageResponse> createBook(Book book) {
 
 		logger.info(" createBook() {} " + book);
+		
+		Optional<User> user = userRepository.findById((long) book.getAuthorId());
+
+		if (user.isEmpty()) {
+			throw new RequestNotFounException(" Author Not Found");
+		}
+
 		ResponseEntity<MessageResponse> response = null;
 
 		response = restTemplate.postForEntity(commonRestApiUrl.getCreateBookUrl(), book, MessageResponse.class);
@@ -55,6 +70,7 @@ public class BookRestApiService {
 	public ResponseEntity<MessageResponse> blockBook(Integer authorId, Integer bookId, String block) {
 
 		logger.info(" blockBook() {} " + bookId);
+
 		ResponseEntity<MessageResponse> response = null;
 
 		String url = commonStringUtil.replaceAll("authorId", "" + authorId, commonRestApiUrl.getBlockBookUrl());
@@ -77,6 +93,38 @@ public class BookRestApiService {
 				+ "&publisher=" + publisher;
 
 		response = restTemplate.getForEntity(commonRestApiUrl.getSearchBookUrl() + urlParam, List.class);
+
+		return response;
+
+	}
+
+	public ResponseEntity<MessageResponse> subscribeBook(BookSub bookSub) {
+
+		logger.info(" subscribeBook() {} " + bookSub);
+
+		ResponseEntity<MessageResponse> response = null;
+
+		response = restTemplate.postForEntity(commonRestApiUrl.getSubscribeBookUrl(), bookSub, MessageResponse.class);
+
+		return response;
+
+	}
+
+	public ResponseEntity<List> getAllReaderBook(String emailId) {
+		logger.info(" getAllReaderBook() {} ");
+
+		Optional<User> user = userRepository.findByEmail(emailId);
+
+		if (user.isEmpty()) {
+			throw new RequestNotFounException(" User Not Found");
+		}
+
+		ResponseEntity<List> response = null;
+
+		String url = commonStringUtil.replaceAll("readerId", "" + user.get().getId(),
+				commonRestApiUrl.getGetAllReaderBookUrl());
+
+		response = restTemplate.getForEntity(url, List.class);
 
 		return response;
 

@@ -18,6 +18,12 @@ public class CommonRestApiUrl {
 	@Value("${rest.api.url.search-book}")
 	private String searchBookUrl;
 
+	@Value("${rest.api.url.subscribe-book}")
+	private String subscribeBookUrl;
+
+	@Value("${rest.api.url.get-all-book-reader}")
+	private String getAllReaderBookUrl;
+
 	public String getCreateBookUrl() {
 		return createBookUrl;
 	}
@@ -32,6 +38,14 @@ public class CommonRestApiUrl {
 
 	public String getSearchBookUrl() {
 		return searchBookUrl;
+	}
+
+	public String getSubscribeBookUrl() {
+		return subscribeBookUrl;
+	}
+
+	public String getGetAllReaderBookUrl() {
+		return getAllReaderBookUrl;
 	}
 
 }

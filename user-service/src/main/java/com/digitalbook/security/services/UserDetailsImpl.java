@@ -12,6 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.digitalbook.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * @author PRADEEP
+ *
+ */
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
@@ -94,4 +98,10 @@ public class UserDetailsImpl implements UserDetails {
 		UserDetailsImpl user = (UserDetailsImpl) o;
 		return Objects.equals(id, user.id);
 	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
 }
