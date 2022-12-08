@@ -48,5 +48,36 @@ public class BookSubController {
 		return ResponseEntity.ok(books);
 
 	}
+	
+	@GetMapping("get/{readerId}/{subId}")
+	public ResponseEntity<?> getByReaderAndSubId(@PathVariable Integer readerId,@PathVariable Integer subId) {
+
+		logger.info(" getByReaderAndSubId() {}" + readerId);
+		Book book = bookSubService.getByReadeIdAndSubId(readerId,subId);
+
+		return ResponseEntity.ok(book);
+
+	}
+	
+	@GetMapping("content/{readerId}/{subId}")
+	public ResponseEntity<?> contentByReaderAndSubId(@PathVariable Integer readerId,@PathVariable Integer subId) {
+
+		logger.info(" contentByReaderAndSubId() {}" + readerId);
+		String content = bookSubService.contentByReaderAndSubId(readerId,subId);
+
+		return ResponseEntity.ok(content);
+
+	}
+	
+	@PostMapping("cancel-sub/{readerId}/{subId}")
+	public ResponseEntity<?> cancelSubByReaderAndSubId(@PathVariable Integer readerId,@PathVariable Integer subId) {
+
+		logger.info(" readByReaderAndSubId() {}" + readerId);
+		
+		bookSubService.cancelSubByReaderAndSubId(readerId,subId);
+
+		return ResponseEntity.ok(new MessageResponse("Cancel subscription successfully!"));
+
+	}
 
 }

@@ -15,4 +15,6 @@ public interface BookSubRepository extends JpaRepository<BookSub, Integer> {
 
 	List<BookSub> findByReaderId(Integer readerId);
 
+	Optional<BookSub> findByIdAndReaderId(Integer subId, Integer readerId);
+
 }

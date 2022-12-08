@@ -42,7 +42,7 @@ public class BookRestApiService {
 	public ResponseEntity<MessageResponse> createBook(Book book) {
 
 		logger.info(" createBook() {} " + book);
-		
+
 		Optional<User> user = userRepository.findById((long) book.getAuthorId());
 
 		if (user.isEmpty()) {
@@ -51,7 +51,13 @@ public class BookRestApiService {
 
 		ResponseEntity<MessageResponse> response = null;
 
-		response = restTemplate.postForEntity(commonRestApiUrl.getCreateBookUrl(), book, MessageResponse.class);
+		try {
+			response = restTemplate.postForEntity(commonRestApiUrl.getCreateBookUrl(), book, MessageResponse.class);
+		} catch (Exception e) {
+			String message = e.getMessage();
+			System.out.println("      ------     " + message);
+
+		}
 
 		return response;
 
@@ -125,6 +131,71 @@ public class BookRestApiService {
 				commonRestApiUrl.getGetAllReaderBookUrl());
 
 		response = restTemplate.getForEntity(url, List.class);
+
+		return response;
+
+	}
+
+	public ResponseEntity<Book> getBookByReaderAndSubId(String emailId, Integer subId) {
+		logger.info(" getBookByReaderAndSubId() {} ");
+
+		Optional<User> user = userRepository.findByEmail(emailId);
+
+		if (user.isEmpty()) {
+			throw new RequestNotFounException(" User Not Found");
+		}
+
+		ResponseEntity<Book> response = null;
+
+		String url = commonStringUtil.replaceAll("{readerId}", "" + user.get().getId(),
+				commonRestApiUrl.getGetReaderBookUrl());
+		url = commonStringUtil.replaceAll("{subId}", "" + subId, url);
+
+		response = restTemplate.getForEntity(url, Book.class);
+
+		return response;
+
+	}
+
+	public ResponseEntity<String> getContentByReaderAndSubId(String emailId, Integer subId) {
+		logger.info(" getContentByReaderAndSubId() {} ");
+
+		Optional<User> user = userRepository.findByEmail(emailId);
+
+		if (user.isEmpty()) {
+			throw new RequestNotFounException(" User Not Found");
+		}
+
+		ResponseEntity<String> response = null;
+
+		String url = commonStringUtil.replaceAll("{readerId}", "" + user.get().getId(),
+				commonRestApiUrl.getContentReaderSubBookUrl());
+		url = commonStringUtil.replaceAll("{subId}", "" + subId, url);
+
+		response = restTemplate.getForEntity(url, String.class);
+
+		return response;
+
+	}
+
+	public ResponseEntity<MessageResponse> cancelByReaderAndSubId(String emailId, Integer subId) {
+		logger.info(" cancelByReaderAndSubId() {} ");
+
+		Optional<User> user = userRepository.findByEmail(emailId);
+
+		if (user.isEmpty()) {
+			throw new RequestNotFounException(" User Not Found");
+		}
+
+		ResponseEntity<MessageResponse> response = null;
+
+		String url = commonStringUtil.replaceAll("{readerId}", "" + user.get().getId(),
+				commonRestApiUrl.getCancelSubBookUrl());
+		url = commonStringUtil.replaceAll("{subId}", "" + subId, url);
+
+		Map<String, Object> reqParam = new HashMap<>();
+
+		response = restTemplate.postForEntity(url, reqParam, MessageResponse.class);
 
 		return response;
 

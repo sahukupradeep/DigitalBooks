@@ -24,6 +24,15 @@ public class CommonRestApiUrl {
 	@Value("${rest.api.url.get-all-book-reader}")
 	private String getAllReaderBookUrl;
 
+	@Value("${rest.api.url.get-book-reader}")
+	private String getReaderBookUrl;
+
+	@Value("${rest.api.url.get-content-reader-book}")
+	private String contentReaderSubBookUrl;
+
+	@Value("${rest.api.url.cancel-sub-book}")
+	private String cancelSubBookUrl;
+
 	public String getCreateBookUrl() {
 		return createBookUrl;
 	}
@@ -46,6 +55,18 @@ public class CommonRestApiUrl {
 
 	public String getGetAllReaderBookUrl() {
 		return getAllReaderBookUrl;
+	}
+
+	public String getGetReaderBookUrl() {
+		return getReaderBookUrl;
+	}
+
+	public String getContentReaderSubBookUrl() {
+		return contentReaderSubBookUrl;
+	}
+
+	public String getCancelSubBookUrl() {
+		return cancelSubBookUrl;
 	}
 
 }

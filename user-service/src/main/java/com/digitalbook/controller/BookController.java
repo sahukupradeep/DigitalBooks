@@ -109,4 +109,37 @@ public class BookController {
 
 	}
 
+	@GetMapping("readers/{emailId}/books/{subId}")
+	@PreAuthorize("hasRole('READER')")
+	public ResponseEntity<Book> getReaderBook(@PathVariable String emailId, @PathVariable Integer subId) {
+
+		logger.info(" getReaderBook() {}");
+		ResponseEntity<Book> responseEntity = bookRestApiService.getBookByReaderAndSubId(emailId, subId);
+
+		return responseEntity;
+
+	}
+
+	@GetMapping("readers/{emailId}/books/{subId}/read")
+	@PreAuthorize("hasRole('READER')")
+	public ResponseEntity<String> getReaderBookRead(@PathVariable String emailId, @PathVariable Integer subId) {
+
+		logger.info(" getReaderBook() {}");
+		ResponseEntity<String> responseEntity = bookRestApiService.getContentByReaderAndSubId(emailId, subId);
+
+		return responseEntity;
+
+	}
+
+	@PostMapping("readers/{emailId}/books/{subId}/cancel-subscription")
+	@PreAuthorize("hasRole('READER')")
+	public ResponseEntity<MessageResponse> cancelReaderBook(@PathVariable String emailId, @PathVariable Integer subId) {
+
+		logger.info(" getReaderBook() {}");
+		ResponseEntity<MessageResponse> responseEntity = bookRestApiService.cancelByReaderAndSubId(emailId, subId);
+
+		return responseEntity;
+
+	}
+
 }
