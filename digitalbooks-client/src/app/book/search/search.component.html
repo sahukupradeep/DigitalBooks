@@ -1,0 +1,89 @@
+<div class="col-md-12">
+    <div class="card card-container" *ngIf="!isSuccessful">
+        <h3>Search Books</h3>
+
+        <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" class="form-control" name="category" [(ngModel)]="form.category" required
+                    #category="ngModel" />
+                <div class="alert-danger" *ngIf="category.errors && f.submitted">
+                    <div *ngIf="category.errors.required">Category is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" name="title" [(ngModel)]="form.title" required
+                    #title="ngModel" />
+                <div class="alert-danger" *ngIf="title.errors && f.submitted">
+                    <div *ngIf="title.errors.required">Title is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="author">Author</label>
+                <input type="text" class="form-control" name="author" [(ngModel)]="form.author" required
+                    #author="ngModel" />
+                <div class="alert-danger" *ngIf="author.errors && f.submitted">
+                    <div *ngIf="author.errors.required">Author is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="text" class="form-control" name="price" [(ngModel)]="form.price" required
+                    #price="ngModel" />
+                <div class="alert-danger" *ngIf="price.errors && f.submitted">
+                    <div *ngIf="price.errors.required">Price is required</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="publisher">Publisher</label>
+                <input type="text" class="form-control" name="publisher" [(ngModel)]="form.publisher" required
+                    #publisher="ngModel" />
+                <div class="alert-danger" *ngIf="publisher.errors && f.submitted">
+                    <div *ngIf="publisher.errors.required">Publisher is required</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary btn-block">Search</button>
+            </div>
+
+            <div class="alert alert-warning" *ngIf="f.submitted && isSearchFailed">
+                Failed!<br />{{ errorMessage }}
+            </div>
+        </form>
+
+
+    </div>
+    <div  class="card"  *ngIf="isSuccessful">
+        <button class="alert alert-success"  (click)="ngOnInit()">Back</button>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Logo</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Price</th>
+                    <th>Published Date</th>
+                    <th>Category</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let book of books; index as i">
+                    <td scope="row">{{i+1}}</td>
+                    <td>{{book.logo}}</td>
+                    <td>{{book.title}}</td>
+                    <td>{{book.authorId}}</td>
+                    <td>{{book.publisher}}</td>
+                    <td>{{book.price}}</td>
+                    <td>{{book.publishedDate}}</td>
+                    <td>{{book.category}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
