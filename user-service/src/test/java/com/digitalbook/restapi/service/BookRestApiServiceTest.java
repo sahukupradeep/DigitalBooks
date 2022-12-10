@@ -43,7 +43,7 @@ class BookRestApiServiceTest {
 	private UserRepository userRepositoryMock;
 
 	@Test
-	void createBookTest() {
+	void createBookTest() throws Exception {
 
 		Book book = new Book();
 		book.setAuthorId(1);

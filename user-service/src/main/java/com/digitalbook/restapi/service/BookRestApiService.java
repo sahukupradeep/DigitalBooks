@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.digitalbook.entity.User;
@@ -21,6 +22,7 @@ import com.digitalbook.payload.response.MessageResponse;
 import com.digitalbook.repository.UserRepository;
 import com.digitalbook.util.CommonRestApiUrl;
 import com.digitalbook.util.CommonStringUtil;
+import com.digitalbook.util.RestApiExceptionUtil;
 
 @Service
 public class BookRestApiService {
@@ -39,7 +41,7 @@ public class BookRestApiService {
 	@Autowired
 	CommonStringUtil commonStringUtil;
 
-	public ResponseEntity<MessageResponse> createBook(Book book) {
+	public ResponseEntity<MessageResponse> createBook(Book book) throws Exception {
 
 		logger.info(" createBook() {} " + book);
 
@@ -49,17 +51,13 @@ public class BookRestApiService {
 			throw new RequestNotFounException(" Author Not Found");
 		}
 
-		ResponseEntity<MessageResponse> response = null;
-
 		try {
-			response = restTemplate.postForEntity(commonRestApiUrl.getCreateBookUrl(), book, MessageResponse.class);
-		} catch (Exception e) {
-			String message = e.getMessage();
-			System.out.println("      ------     " + message);
-
+			ResponseEntity<MessageResponse> response = restTemplate.postForEntity(commonRestApiUrl.getCreateBookUrl(),
+					book, MessageResponse.class);
+			return response;
+		} catch (HttpClientErrorException e) {
+			throw RestApiExceptionUtil.throwClientException(e);
 		}
-
-		return response;
 
 	}
 
@@ -136,7 +134,7 @@ public class BookRestApiService {
 
 	}
 
-	public ResponseEntity<Book> getBookByReaderAndSubId(String emailId, Integer subId) {
+	public ResponseEntity<Book> getBookByReaderAndSubId(String emailId, Integer subId) throws Exception {
 		logger.info(" getBookByReaderAndSubId() {} ");
 
 		Optional<User> user = userRepository.findByEmail(emailId);
@@ -145,15 +143,16 @@ public class BookRestApiService {
 			throw new RequestNotFounException(" User Not Found");
 		}
 
-		ResponseEntity<Book> response = null;
-
-		String url = commonStringUtil.replaceAll("{readerId}", "" + user.get().getId(),
+		String url = commonStringUtil.replaceAll("readerId", "" + user.get().getId(),
 				commonRestApiUrl.getGetReaderBookUrl());
-		url = commonStringUtil.replaceAll("{subId}", "" + subId, url);
+		url = commonStringUtil.replaceAll("subId", "" + subId, url);
 
-		response = restTemplate.getForEntity(url, Book.class);
-
-		return response;
+		try {
+			ResponseEntity<Book> response = restTemplate.getForEntity(url, Book.class);
+			return response;
+		} catch (HttpClientErrorException e) {
+			throw RestApiExceptionUtil.throwClientException(e);
+		}
 
 	}
 
@@ -168,9 +167,9 @@ public class BookRestApiService {
 
 		ResponseEntity<String> response = null;
 
-		String url = commonStringUtil.replaceAll("{readerId}", "" + user.get().getId(),
+		String url = commonStringUtil.replaceAll("readerId", "" + user.get().getId(),
 				commonRestApiUrl.getContentReaderSubBookUrl());
-		url = commonStringUtil.replaceAll("{subId}", "" + subId, url);
+		url = commonStringUtil.replaceAll("subId", "" + subId, url);
 
 		response = restTemplate.getForEntity(url, String.class);
 
@@ -189,9 +188,9 @@ public class BookRestApiService {
 
 		ResponseEntity<MessageResponse> response = null;
 
-		String url = commonStringUtil.replaceAll("{readerId}", "" + user.get().getId(),
+		String url = commonStringUtil.replaceAll("readerId", "" + user.get().getId(),
 				commonRestApiUrl.getCancelSubBookUrl());
-		url = commonStringUtil.replaceAll("{subId}", "" + subId, url);
+		url = commonStringUtil.replaceAll("subId", "" + subId, url);
 
 		Map<String, Object> reqParam = new HashMap<>();
 

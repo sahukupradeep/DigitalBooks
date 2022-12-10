@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import com.digitalbook.payload.response.MessageResponse;
 import com.digitalbook.restapi.service.BookRestApiService;
 import com.digitalbook.validator.BookValidator;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1/digitalbooks/")
 public class BookController {
@@ -35,7 +37,8 @@ public class BookController {
 
 	@PostMapping("author/{authorId}/books")
 	@PreAuthorize("hasRole('AUTHOR')")
-	public ResponseEntity<MessageResponse> createBook(@Valid @RequestBody Book book, @PathVariable Integer authorId) {
+	public ResponseEntity<MessageResponse> createBook(@Valid @RequestBody Book book, @PathVariable Integer authorId)
+			throws Exception {
 
 		logger.info(" createBook() {}" + book);
 		book.setAuthorId(authorId);
@@ -74,7 +77,7 @@ public class BookController {
 	}
 
 	@GetMapping("search")
-	@PreAuthorize("hasRole('GUEST') or hasRole('AUTHOR') or hasRole('READER')")
+	//@PreAuthorize("hasRole('GUEST') or hasRole('AUTHOR') or hasRole('READER')")
 	public ResponseEntity<List> searchBooks(@RequestParam String category, @RequestParam String title,
 			@RequestParam Integer author, @RequestParam Double price, @RequestParam String publisher) {
 
@@ -99,7 +102,7 @@ public class BookController {
 	}
 
 	@GetMapping("readers/{emailId}/books")
-	@PreAuthorize("hasRole('READER')")
+//	@PreAuthorize("hasRole('READER')")
 	public ResponseEntity<List> getAllReaderBook(@PathVariable String emailId) {
 
 		logger.info(" getAllReaderBook() {}");
@@ -110,8 +113,9 @@ public class BookController {
 	}
 
 	@GetMapping("readers/{emailId}/books/{subId}")
-	@PreAuthorize("hasRole('READER')")
-	public ResponseEntity<Book> getReaderBook(@PathVariable String emailId, @PathVariable Integer subId) {
+//	@PreAuthorize("hasRole('READER')")
+	public ResponseEntity<Book> getReaderBook(@PathVariable String emailId, @PathVariable Integer subId)
+			throws Exception {
 
 		logger.info(" getReaderBook() {}");
 		ResponseEntity<Book> responseEntity = bookRestApiService.getBookByReaderAndSubId(emailId, subId);
@@ -121,7 +125,7 @@ public class BookController {
 	}
 
 	@GetMapping("readers/{emailId}/books/{subId}/read")
-	@PreAuthorize("hasRole('READER')")
+//	@PreAuthorize("hasRole('READER')")
 	public ResponseEntity<String> getReaderBookRead(@PathVariable String emailId, @PathVariable Integer subId) {
 
 		logger.info(" getReaderBook() {}");
@@ -132,7 +136,7 @@ public class BookController {
 	}
 
 	@PostMapping("readers/{emailId}/books/{subId}/cancel-subscription")
-	@PreAuthorize("hasRole('READER')")
+//	@PreAuthorize("hasRole('READER')")
 	public ResponseEntity<MessageResponse> cancelReaderBook(@PathVariable String emailId, @PathVariable Integer subId) {
 
 		logger.info(" getReaderBook() {}");
