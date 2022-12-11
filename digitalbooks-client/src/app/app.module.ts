@@ -18,6 +18,7 @@ import { SearchComponent } from './book/search/search.component';
 import { CreateComponent } from './book/create/create.component';
 import { ListComponent } from './book/list/list.component';
 import { DetialsComponent } from './book/detials/detials.component';
+import { EditComponent } from './book/edit/edit.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { DetialsComponent } from './book/detials/detials.component';
     SearchComponent,
     CreateComponent,
     ListComponent,
-    DetialsComponent
+    DetialsComponent,
+    EditComponent
   ],
   imports: [
     BrowserModule,

@@ -10,6 +10,9 @@ import { BoardModeratorComponent } from './board-moderator/board-moderator.compo
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { SearchComponent } from './book/search/search.component';
 import { CreateComponent } from './book/create/create.component';
+import { ListComponent } from './book/list/list.component';
+import { DetialsComponent } from './book/detials/detials.component';
+import { EditComponent } from './book/edit/edit.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -21,6 +24,9 @@ const routes: Routes = [
   { path: 'admin', component: BoardAdminComponent },
   { path: 'search', component: SearchComponent },
   { path: 'create', component: CreateComponent },
+  { path: 'list', component: ListComponent },
+  { path: 'details', component: DetialsComponent },
+  { path: 'edit/:id', component:  EditComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

@@ -11,17 +11,31 @@ const API_URL = 'http://localhost:8080/api/v1/digitalbooks/';
   providedIn: 'root'
 })
 export class BookService {
-
-  user:any;
-  constructor(private http: HttpClient,private tokenStorage: TokenStorageService) { 
-    this.user=tokenStorage.getUser();
+  
+  user: any;
+  constructor(private http: HttpClient, private tokenStorage: TokenStorageService) {
+    this.user = tokenStorage.getUser();
   }
 
   search(category: string, title: string, author: number, price: number, publisher: string): Observable<any> {
     return this.http.get(API_URL + 'search?category=' + category + '&title=' + title + '&author=' + author + '&price=' + price + '&publisher=' + publisher, { responseType: 'json' });
   }
+
   create(logo: String, title: String, category: String, price: number, publisher: string, active: boolean, content: string) {
-    this.user=this.tokenStorage.getUser();
-    return this.http.post(API_URL + 'author/' + this.user.id+ '/books', { logo, title, category, price, publisher, active, content }, httpOptions);
+    this.user = this.tokenStorage.getUser();
+    return this.http.post(API_URL + 'author/' + this.user.id + '/books', { logo, title, category, price, publisher, active, content }, httpOptions);
+  }
+
+  list() {
+    console.log(this.user.roles[0])
+    if(this.user.roles[0] === 'ROLE_AUTHOR'){
+      return this.http.get(API_URL + "author/" + this.user.id + "/books", { responseType: 'json' });
+    }else{
+      return this.http.get(API_URL + "readers/" + this.user.email + "/books", { responseType: 'json' });
+    }
+  }
+
+  getBook(id: number) {
+    return this.http.get(API_URL + "author/" + this.user.id + "/books/"+id, { responseType: 'json' });
   }
 }

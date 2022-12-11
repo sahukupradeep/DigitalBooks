@@ -1,1 +1,34 @@
-<p>list works!</p>
+<div class="col-md-12">
+    <button *ngIf="isAuthor" class="btn btn-primary btn-md"  routerLink="/create">Create Book</button>
+    <div  class="card" >
+       
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Logo</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Price</th>
+                    <th>Published Date</th>
+                    <th>Category</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let book of books; index as i">
+                    <td scope="row">{{i+1}}</td>
+                    <td>{{book.logo}}</td>
+                    <td>{{book.title}}</td>
+                    <td>{{book.authorId}}</td>
+                    <td>{{book.publisher}}</td>
+                    <td>{{book.price}}</td>
+                    <td>{{book.createdDate}}</td>
+                    <td>{{book.category}}</td>
+                    <td><button *ngIf="isAuthor" class="btn btn-primary btn-md"  [routerLink]="['/edit',book.id]">Edit</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
