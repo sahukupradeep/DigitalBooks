@@ -1,6 +1,6 @@
 <div class="col-md-12">
     <div class="card card-container" *ngIf="!isSuccessful">
-        <h3>Search Books</h3>
+        <h3 class="text-center">Search Books</h3>
 
         <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
 
@@ -45,8 +45,8 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <button class="btn btn-primary btn-block">Search</button>
+            <div class="form-group text-center">
+                <button class="btn btn-primary btn-md">Search</button>
             </div>
 
             <div class="alert alert-warning" *ngIf="f.submitted && isSearchFailed">
@@ -57,7 +57,7 @@
 
     </div>
     <div  class="card"  *ngIf="isSuccessful">
-        <button class="alert alert-success"  (click)="ngOnInit()">Back</button>
+        <button class="btn btn-primary btn-md"  (click)="ngOnInit()">Back</button>
         <table class="table table-striped">
             <thead>
                 <tr>

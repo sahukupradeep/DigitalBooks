@@ -9,6 +9,7 @@ import { BoardUserComponent } from './board-user/board-user.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { SearchComponent } from './book/search/search.component';
+import { CreateComponent } from './book/create/create.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'mod', component: BoardModeratorComponent },
   { path: 'admin', component: BoardAdminComponent },
   { path: 'search', component: SearchComponent },
+  { path: 'create', component: CreateComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

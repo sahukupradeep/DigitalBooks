@@ -16,6 +16,8 @@ import { BoardUserComponent } from './board-user/board-user.component';
 import { authInterceptorProviders } from './_helpers/auth.interceptor';
 import { SearchComponent } from './book/search/search.component';
 import { CreateComponent } from './book/create/create.component';
+import { ListComponent } from './book/list/list.component';
+import { DetialsComponent } from './book/detials/detials.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { CreateComponent } from './book/create/create.component';
     BoardModeratorComponent,
     BoardUserComponent,
     SearchComponent,
-    CreateComponent
+    CreateComponent,
+    ListComponent,
+    DetialsComponent
   ],
   imports: [
     BrowserModule,

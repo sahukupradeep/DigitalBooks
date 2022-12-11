@@ -17,7 +17,7 @@ export class SearchComponent implements OnInit {
   constructor(private bookService:BookService) { }
 
   ngOnInit(): void {
-    this.back();
+    this.searchPage();
   }
 
   onSubmit(): void {
@@ -35,7 +35,7 @@ export class SearchComponent implements OnInit {
         this.isSearchFailed = true;
       })
   }
-  back():void{
+  searchPage():void{
     this.form = {
       category:null,
       title: null,
