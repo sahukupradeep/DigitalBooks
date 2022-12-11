@@ -40,7 +40,6 @@ public class Book implements Serializable {
 	@NotEmpty
 	private String publisher;
 
-	@NotNull
 	private LocalDate publishedDate;
 
 	@NotEmpty

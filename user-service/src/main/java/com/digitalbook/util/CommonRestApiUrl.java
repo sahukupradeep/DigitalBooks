@@ -33,6 +33,12 @@ public class CommonRestApiUrl {
 	@Value("${rest.api.url.cancel-sub-book}")
 	private String cancelSubBookUrl;
 
+	@Value("${rest.api.url.get-all-author}")
+	private String allBookAuthorUrl;
+	
+	@Value("${rest.api.url.get-book-author}")
+	private  String getAuthorBookUrl = null;
+
 	public String getCreateBookUrl() {
 		return createBookUrl;
 	}
@@ -67,6 +73,14 @@ public class CommonRestApiUrl {
 
 	public String getCancelSubBookUrl() {
 		return cancelSubBookUrl;
+	}
+
+	public String getAllBookAuthorUrl() {
+		return allBookAuthorUrl;
+	}
+
+	public String getGetAuthorBookUrl() {
+		return getAuthorBookUrl;
 	}
 
 }

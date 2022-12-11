@@ -76,8 +76,29 @@ public class BookController {
 
 	}
 
+	@GetMapping("author/{authorId}/books")
+	@PreAuthorize("hasRole('AUTHOR')")
+	public ResponseEntity<List> getBooksByAuthor(@PathVariable Integer authorId) {
+
+		logger.info(" getBooksByAuthor() {}");
+		ResponseEntity<List> responseEntity = bookRestApiService.getBooksByAuthor(authorId);
+
+		return responseEntity;
+
+	}
+	@GetMapping("author/{authorId}/books/{bookId}")
+	@PreAuthorize("hasRole('AUTHOR')")
+	public ResponseEntity<Book> getBooksByAuthorAndBookId(@PathVariable Integer authorId,@PathVariable Integer bookId) throws Exception {
+
+		logger.info(" getBooksByAuthorAndBookId() {}");
+		ResponseEntity<Book> responseEntity = bookRestApiService.getBooksByAuthorAndBookId(authorId,bookId);
+
+		return responseEntity;
+
+	}
+
 	@GetMapping("search")
-	//@PreAuthorize("hasRole('GUEST') or hasRole('AUTHOR') or hasRole('READER')")
+	// @PreAuthorize("hasRole('GUEST') or hasRole('AUTHOR') or hasRole('READER')")
 	public ResponseEntity<List> searchBooks(@RequestParam String category, @RequestParam String title,
 			@RequestParam Integer author, @RequestParam Double price, @RequestParam String publisher) {
 

@@ -66,6 +66,16 @@ public class BookController {
 
 	}
 
+	@GetMapping("/author/{authorId}/book/{bookId}")
+	public ResponseEntity<Book> getBook(@PathVariable Integer authorId, @PathVariable Integer bookId) {
+
+		logger.info(" getBook() Author " + authorId + " Book " + bookId);
+		Book book = bookService.getBook(authorId, bookId);
+
+		return ResponseEntity.ok(book);
+
+	}
+
 	@GetMapping("search")
 	public ResponseEntity<?> getByRequest(@RequestParam String category, @RequestParam String title,
 			@RequestParam Integer author, @RequestParam Double price, @RequestParam String publisher) {
@@ -73,7 +83,18 @@ public class BookController {
 		logger.info(" getByRequest() category " + category + " title " + title + " price " + price + " publisher "
 				+ publisher);
 
-		List<Book> books = bookService.getByRequest(category, title, author,price, publisher);
+		List<Book> books = bookService.getByRequest(category, title, author, price, publisher);
+
+		return ResponseEntity.ok(books);
+
+	}
+
+	@GetMapping("get-all/{authorId}")
+	public ResponseEntity<?> getBooksByAuthor(@PathVariable Integer authorId) {
+
+		logger.info(" getBooksByAuthor() ");
+
+		List<Book> books = bookService.getBooksByAuthor(authorId);
 
 		return ResponseEntity.ok(books);
 

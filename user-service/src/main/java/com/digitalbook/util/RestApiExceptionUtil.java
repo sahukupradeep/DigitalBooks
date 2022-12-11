@@ -12,14 +12,18 @@ public class RestApiExceptionUtil {
 		ObjectMapper mapper = new ObjectMapper();
 		String message = ex.getMessage();
 		String[] arrStr = message.split(" : ");
-		String jsonMsg = arrStr[1];
+		//String jsonMsg = arrStr[1];
 		String msg = "";
+		System.out.println("---jsonMsg  "+message);
 		try {
-			MessageResponse messageResponse = mapper.readValue(jsonMsg.substring(1, jsonMsg.length()),
+			MessageResponse messageResponse = mapper.readValue(message.trim().substring(7, message.length()),
 					MessageResponse.class);
 			msg = messageResponse.getMessage();
+			System.out.println("-----    "+msg);
 		} catch (Exception e) {
-			msg = jsonMsg;
+			
+			msg = message;
+			System.out.println("-----    "+msg);
 		}
 
 		switch (arrStr[0].trim()) {

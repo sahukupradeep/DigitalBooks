@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.digitalbook.exception.InvalidRequestException;
 import com.digitalbook.exception.RequestNotFounException;
-import com.digitalbook.exception.RoleNotFoundException;
 import com.digitalbook.payload.response.MessageResponse;
 
 @RestControllerAdvice
@@ -28,13 +27,6 @@ public class ControllerExceptionHandler {
 	public MessageResponse handleBadRequest(InvalidRequestException ex) {
 		logger.error(ex.getMessage());
 		return new MessageResponse(ex.getMessage());
-	}
-
-	@ResponseStatus(HttpStatus.NOT_FOUND) // 404
-	@ExceptionHandler(RoleNotFoundException.class)
-	public MessageResponse handleNotFound(RoleNotFoundException rnf) {
-		logger.error("Requested Role not found");
-		return new MessageResponse("Error : Requested Role not found!");
 	}
 
 	@ResponseStatus(HttpStatus.NOT_FOUND) // 404

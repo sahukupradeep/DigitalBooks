@@ -61,7 +61,7 @@ public class BookService {
 
 	public Book blockBook(Integer authorId, Integer bookId, String block) {
 		logger.info(" blockBook " + block);
-		Optional<Book> existBook = bookRepository.findByIdAndAuthorId(bookId,authorId );
+		Optional<Book> existBook = bookRepository.findByIdAndAuthorId(bookId, authorId);
 		if (existBook.isEmpty()) {
 			throw new RequestNotFounException("Error :Requested Book not found : " + bookId);
 		}
@@ -85,14 +85,34 @@ public class BookService {
 		return result;
 	}
 
-	public List<Book> getByRequest(String category, String title,Integer author, Double price, String publisher) {
+	public List<Book> getByRequest(String category, String title, Integer author, Double price, String publisher) {
 
-		List<Book> books = bookRepository.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisher(category, title,author, price, publisher);
+		List<Book> books = bookRepository.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisher(category, title, author,
+				price, publisher);
 
 		if (books == null || books.isEmpty()) {
 			throw new RequestNotFounException("Error : Book not found");
 		}
 		return books;
+	}
+
+	public List<Book> getBooksByAuthor(Integer authorId) {
+		List<Book> books = bookRepository.findByAuthorId(authorId);
+
+		if (books == null || books.isEmpty()) {
+			throw new RequestNotFounException("Error : Book not found");
+		}
+		return books;
+	}
+
+	public Book getBook(Integer authorId, Integer bookId) {
+		logger.info(" getBook ");
+		Optional<Book> book = bookRepository.findByIdAndAuthorId(bookId, authorId);
+		if (book.isEmpty()) {
+			throw new RequestNotFounException("Error :Requested Book not found : " + bookId);
+		}
+
+		return book.get();
 	}
 
 }

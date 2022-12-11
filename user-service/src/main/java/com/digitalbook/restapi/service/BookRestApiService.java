@@ -200,4 +200,42 @@ public class BookRestApiService {
 
 	}
 
+	public ResponseEntity<List> getBooksByAuthor(Integer authorId) {
+
+		logger.info(" createBook() {} ");
+
+		Optional<User> user = userRepository.findById((long) authorId);
+
+		if (user.isEmpty()) {
+			throw new RequestNotFounException(" Author Not Found");
+		}
+		ResponseEntity<List> response = null;
+		String url = commonStringUtil.replaceAll("authorId", "" + authorId, commonRestApiUrl.getAllBookAuthorUrl());
+
+		response = restTemplate.getForEntity(url, List.class);
+
+		return response;
+	}
+
+	public ResponseEntity<Book> getBooksByAuthorAndBookId(Integer authorId, Integer bookId) throws Exception {
+		logger.info(" getBookByReaderAndSubId() {} ");
+
+		Optional<User> user = userRepository.findById((long) authorId);
+
+		if (user.isEmpty()) {
+			throw new RequestNotFounException(" User Not Found");
+		}
+
+		String url = commonStringUtil.replaceAll("authorId", "" + authorId,
+				commonRestApiUrl.getGetAuthorBookUrl());
+		url = commonStringUtil.replaceAll("bookId", "" + bookId, url);
+
+		try {
+			ResponseEntity<Book> response = restTemplate.getForEntity(url, Book.class);
+			return response;
+		} catch (HttpClientErrorException e) {
+			throw RestApiExceptionUtil.throwClientException(e);
+		}
+	}
+
 }
