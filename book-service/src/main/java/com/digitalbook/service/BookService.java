@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.digitalbook.entity.Book;
 import com.digitalbook.exception.InvalidRequestException;
 import com.digitalbook.exception.RequestNotFounException;
+import com.digitalbook.payload.response.BookResponse;
 import com.digitalbook.repository.BookRepository;
 import com.digitalbook.util.ConstantValueUtil;
 
@@ -85,9 +86,9 @@ public class BookService {
 		return result;
 	}
 
-	public List<Book> getByRequest(String category, String title, Integer author, Double price, String publisher) {
+	public List<BookResponse> getByRequest(String category, String title, Integer author, Double price, String publisher) {
 
-		List<Book> books = bookRepository.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisher(category, title, author,
+		List<BookResponse> books = bookRepository.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisherActive(category, title, author,
 				price, publisher);
 
 		if (books == null || books.isEmpty()) {

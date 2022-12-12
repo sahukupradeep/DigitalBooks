@@ -2,6 +2,8 @@ package com.digitalbook.service;
 
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +17,7 @@ import com.digitalbook.entity.Book;
 import com.digitalbook.entity.BookSub;
 import com.digitalbook.exception.InvalidRequestException;
 import com.digitalbook.exception.RequestNotFounException;
+import com.digitalbook.payload.response.BookResponse;
 import com.digitalbook.repository.BookRepository;
 import com.digitalbook.repository.BookSubRepository;
 
@@ -102,12 +105,13 @@ class BookSubServiceTest {
 		List<BookSub> bookSubs = List.of(bookSub);
 		List<Integer> listBookId = List.of(1);
 		List<Book> books = List.of(new Book());
+		List<BookResponse> bookResponses = List.of(this.newBookResponse());
 
-		when(bookSubRepositoryMock.findByReaderId(readerId)).thenReturn(bookSubs);
+		when(bookSubRepositoryMock.findByReaderId(readerId)).thenReturn(bookResponses);
 
 		when(bookRepositoryMock.findByIdIn(listBookId)).thenReturn(books);
 
-		Assertions.assertEquals(books, bookSubService.getByReadeId(readerId));
+		Assertions.assertEquals(bookResponses, bookSubService.getByReadeId(readerId));
 
 	}
 
@@ -116,7 +120,7 @@ class BookSubServiceTest {
 
 		int readerId = 1;
 
-		List<BookSub> bookSubs = null;
+		List<BookResponse> bookSubs = null;
 
 		when(bookSubRepositoryMock.findByReaderId(readerId)).thenReturn(bookSubs);
 
@@ -135,7 +139,7 @@ class BookSubServiceTest {
 		bookSub.setBookId(1);
 		bookSub.setReaderId(1);
 
-		List<BookSub> bookSubs = List.of();
+		List<BookResponse> bookSubs = List.of();
 
 		when(bookSubRepositoryMock.findByReaderId(readerId)).thenReturn(bookSubs);
 
@@ -154,14 +158,14 @@ class BookSubServiceTest {
 		bookSub.setBookId(1);
 		bookSub.setReaderId(1);
 
-		List<BookSub> bookSubs = List.of(bookSub);
+		List<BookResponse> bookSubs = List.of(this.newBookResponse());
 		List<Integer> listBookId = List.of(1);
 		List<Book> books = null;
 
 		when(bookSubRepositoryMock.findByReaderId(readerId)).thenReturn(bookSubs);
 
 		when(bookRepositoryMock.findByIdIn(listBookId)).thenReturn(books);
-		
+
 		Assertions.assertThrows(RequestNotFounException.class, () -> {
 			bookSubService.getByReadeId(readerId);
 		});
@@ -177,7 +181,7 @@ class BookSubServiceTest {
 		bookSub.setBookId(1);
 		bookSub.setReaderId(1);
 
-		List<BookSub> bookSubs = List.of(bookSub);
+		List<BookResponse> bookSubs = List.of(this.newBookResponse());
 		List<Integer> listBookId = List.of(1);
 		List<Book> books = List.of();
 
@@ -188,6 +192,58 @@ class BookSubServiceTest {
 		Assertions.assertThrows(RequestNotFounException.class, () -> {
 			bookSubService.getByReadeId(readerId);
 		});
+	}
+
+	public BookResponse newBookResponse() {
+		return new BookResponse() {
+
+			@Override
+			public String getLogo() {
+				return null;
+			}
+
+			@Override
+			public String getTitle() {
+				return null;
+			}
+
+			@Override
+			public Integer getAuthorId() {
+				return null;
+			}
+
+			@Override
+			public String getPublisher() {
+				return null;
+			}
+
+			@Override
+			public Double getPrice() {
+				return null;
+			}
+
+			@Override
+			public LocalDateTime getCreatedDate() {
+				return null;
+			}
+
+			@Override
+			public String getCategory() {
+				return null;
+			}
+
+			@Override
+			public Integer getSubId() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public LocalDate getSubDate() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
 	}
 
 }

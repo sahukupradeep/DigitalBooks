@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.digitalbook.BookServiceApplication;
 import com.digitalbook.entity.Book;
+import com.digitalbook.payload.response.BookResponse;
 import com.digitalbook.service.BookService;
 import com.digitalbook.util.ConstantValueUtil;
 
@@ -93,11 +96,64 @@ class BookControllerTest {
 
 	@Test
 	void getByRequestTest() throws Exception {
-		when(bookServiceMock.getByRequest("category", "title", 1, 4.0, "publisher")).thenReturn(List.of(new Book()));
+		when(bookServiceMock.getByRequest("category", "title", 1, 4.0, "publisher"))
+				.thenReturn(List.of(this.getObject()));
 
 		mockMvc.perform(get("/api/book/search?category=category&title=title&author=1&price=4.0&publisher=publisher"))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
+	}
+
+	public BookResponse getObject() {
+		return new BookResponse() {
+
+			@Override
+			public String getLogo() {
+				return null;
+			}
+
+			@Override
+			public String getTitle() {
+				return null;
+			}
+
+			@Override
+			public Integer getAuthorId() {
+				return null;
+			}
+
+			@Override
+			public String getPublisher() {
+				return null;
+			}
+
+			@Override
+			public Double getPrice() {
+				return null;
+			}
+
+			@Override
+			public LocalDateTime getCreatedDate() {
+				return null;
+			}
+
+			@Override
+			public String getCategory() {
+				return null;
+			}
+
+			@Override
+			public Integer getSubId() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public LocalDate getSubDate() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
 	}
 
 }

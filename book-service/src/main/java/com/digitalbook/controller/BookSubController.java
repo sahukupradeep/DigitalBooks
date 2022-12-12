@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.digitalbook.entity.Book;
 import com.digitalbook.entity.BookSub;
+import com.digitalbook.payload.response.BookResponse;
 import com.digitalbook.payload.response.MessageResponse;
 import com.digitalbook.service.BookSubService;
 
@@ -43,7 +44,7 @@ public class BookSubController {
 	public ResponseEntity<?> getAllByReader(@PathVariable Integer readerId) {
 
 		logger.info(" getAllReader() {}" + readerId);
-		List<Book> books = bookSubService.getByReadeId(readerId);
+		List<BookResponse> books = bookSubService.getByReadeId(readerId);
 
 		return ResponseEntity.ok(books);
 
@@ -53,7 +54,7 @@ public class BookSubController {
 	public ResponseEntity<?> getByReaderAndSubId(@PathVariable Integer readerId,@PathVariable Integer subId) {
 
 		logger.info(" getByReaderAndSubId() {}" + readerId);
-		Book book = bookSubService.getByReadeIdAndSubId(readerId,subId);
+		BookResponse book = bookSubService.getByReadeIdAndSubId(readerId,subId);
 
 		return ResponseEntity.ok(book);
 

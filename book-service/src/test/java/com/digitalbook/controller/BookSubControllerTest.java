@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.digitalbook.BookServiceApplication;
-import com.digitalbook.entity.Book;
 import com.digitalbook.entity.BookSub;
 import com.digitalbook.service.BookSubService;
 
@@ -58,7 +57,7 @@ class BookSubControllerTest {
 	void getAllByReaderTest() throws Exception {
 		
 		int redearId=1;
-		when(bookSubServiceMock.getByReadeId(redearId)).thenReturn(List.of(new Book()));
+		when(bookSubServiceMock.getByReadeId(redearId)).thenReturn(List.of());
 
 		mockMvc.perform(get("/api/book-sub/get-all/"+redearId))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON));

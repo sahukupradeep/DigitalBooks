@@ -2,6 +2,8 @@ package com.digitalbook.service;
 
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import com.digitalbook.entity.Book;
 import com.digitalbook.exception.InvalidRequestException;
 import com.digitalbook.exception.RequestNotFounException;
+import com.digitalbook.payload.response.BookResponse;
 import com.digitalbook.repository.BookRepository;
 import com.digitalbook.util.ConstantValueUtil;
 
@@ -161,8 +164,8 @@ class BookServiceTest {
 		book.setPrice(4.0);
 		book.setPublisher("Publisher");
 
-		List<Book> books = List.of(book);
-		when(bookRepositoryMock.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisher("Category", "Title", 1, 4.0,
+		List<BookResponse> books = List.of(this.newBookResponse());
+		when(bookRepositoryMock.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisherActive("Category", "Title", 1, 4.0,
 				"Publisher")).thenReturn(books);
 
 		Assertions.assertEquals(books, bookService.getByRequest("Category", "Title", 1, 4.0, "Publisher"));
@@ -171,7 +174,7 @@ class BookServiceTest {
 	@Test
 	void getByRequestNullTest() {
 
-		when(bookRepositoryMock.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisher("Category", "Title", 1, 4.0,
+		when(bookRepositoryMock.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisherActive("Category", "Title", 1, 4.0,
 				"Publisher")).thenReturn(null);
 
 		Assertions.assertThrows(RequestNotFounException.class, () -> {
@@ -182,13 +185,65 @@ class BookServiceTest {
 	@Test
 	void getByRequestEmptyTest() {
 
-		List<Book> books = List.of();
-		when(bookRepositoryMock.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisher("Category", "Title", 1, 4.0,
+		List<BookResponse> books = List.of();
+		when(bookRepositoryMock.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisherActive("Category", "Title", 1, 4.0,
 				"Publisher")).thenReturn(books);
 
 		Assertions.assertThrows(RequestNotFounException.class, () -> {
 			bookService.getByRequest("Category", "Title", 1, 4.0, "Publisher");
 		});
+	}
+
+	public BookResponse newBookResponse() {
+		return new BookResponse() {
+
+			@Override
+			public String getLogo() {
+				return null;
+			}
+
+			@Override
+			public String getTitle() {
+				return null;
+			}
+
+			@Override
+			public Integer getAuthorId() {
+				return null;
+			}
+
+			@Override
+			public String getPublisher() {
+				return null;
+			}
+
+			@Override
+			public Double getPrice() {
+				return null;
+			}
+
+			@Override
+			public LocalDateTime getCreatedDate() {
+				return null;
+			}
+
+			@Override
+			public String getCategory() {
+				return null;
+			}
+
+			@Override
+			public Integer getSubId() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public LocalDate getSubDate() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
 	}
 
 }
