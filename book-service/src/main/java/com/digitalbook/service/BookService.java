@@ -3,6 +3,8 @@ package com.digitalbook.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import com.digitalbook.entity.Book;
 import com.digitalbook.exception.InvalidRequestException;
 import com.digitalbook.exception.RequestNotFounException;
 import com.digitalbook.payload.response.BookResponse;
+import com.digitalbook.payload.response.SearchBookResponse;
 import com.digitalbook.repository.BookRepository;
 import com.digitalbook.util.ConstantValueUtil;
 
@@ -114,6 +117,35 @@ public class BookService {
 		}
 
 		return book.get();
+	}
+	
+	public SearchBookResponse getList() {
+		
+		List<Book> books=bookRepository.findAllActive();
+		
+		if(books==null || books.isEmpty()) {
+			throw new RequestNotFounException("Book Not Found");
+		}
+		
+		SearchBookResponse searchBookResponse=new SearchBookResponse();
+		
+		Set<String> listTitle=books.stream().map(book->book.getTitle()).collect(Collectors.toSet());
+		searchBookResponse.setTitleSet(listTitle);
+		
+		Set<String> listCategory=books.stream().map(book->book.getCategory()).collect(Collectors.toSet());
+		searchBookResponse.setCategorySet(listCategory);
+		
+		Set<Integer> listAuthorId=books.stream().map(book->book.getAuthorId()).collect(Collectors.toSet());
+		searchBookResponse.setAuthorIdSet(listAuthorId);
+		
+		Set<Double> listPrice=books.stream().map(book->book.getPrice()).collect(Collectors.toSet());
+		searchBookResponse.setPriceSet(listPrice);
+		
+		Set<String> listPublisher=books.stream().map(book->book.getPublisher()).collect(Collectors.toSet());
+		searchBookResponse.setPublisherSet(listPublisher);
+		
+		return searchBookResponse;
+		
 	}
 
 }

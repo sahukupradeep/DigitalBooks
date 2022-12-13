@@ -1,8 +1,10 @@
 <div class="col-md-12">
-    <div class="form-group text-center">
-        <button class="btn btn-primary btn-md" routerLink="/list">Book List</button>
-    </div>
+
     <div class="card container">
+        <div class="form-group">
+            <button class="btn btn-primary btn-md" routerLink="/list">Book List</button>
+            <button *ngIf="isSuccessful" class="btn btn-primary btn-md ml-2"  (click)="ngOnInit()">Create Book</button>
+        </div>
         <h3 class="text-center">Create Book</h3>
 
         <form *ngIf="!isSuccessful" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
@@ -10,24 +12,36 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <input type="text" class="form-control" name="title" [(ngModel)]="form.title" required
-                            #title="ngModel" />
+                        <input type="text" class="form-control" name="title" [(ngModel)]="form.title" minlength="3"
+                            maxlength="50" required #title="ngModel" />
                         <div class="alert-danger" *ngIf="title.errors && f.submitted">
                             <div *ngIf="title.errors.required">Title is required</div>
+                            <div *ngIf="title.errors.minlength">
+                                Title must be at least 3 characters
+                            </div>
+                            <div *ngIf="title.errors.maxlength">
+                                Title must be at most 50 characters
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="category">Category</label>
-                        <input type="text" class="form-control" name="category" [(ngModel)]="form.category" required
-                            #category="ngModel" />
+                        <input type="text" class="form-control" name="category" [(ngModel)]="form.category"
+                            minlength="3" maxlength="50" required #category="ngModel" />
                         <div class="alert-danger" *ngIf="category.errors && f.submitted">
                             <div *ngIf="category.errors.required">Category is required</div>
+                            <div *ngIf="category.errors.minlength">
+                                Category must be at least 3 characters
+                            </div>
+                            <div *ngIf="category.errors.maxlength">
+                                Category must be at most 50 characters
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="logo">Image</label>
-                        <input type="text" class="form-control" name="logo" [(ngModel)]="form.logo" required
-                            #logo="ngModel" />
+                        <input type="text" class="form-control" name="logo" [(ngModel)]="form.logo" minlength="3"
+                            maxlength="50" required #logo="ngModel" />
                         <div class="alert-danger" *ngIf="logo.errors && f.submitted">
                             <div *ngIf="logo.errors.required">logo is required</div>
                         </div>
@@ -36,7 +50,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="price">Price</label>
-                        <input type="text" class="form-control" name="price" [(ngModel)]="form.price" required
+                        <input type="number" class="form-control" name="price" [(ngModel)]="form.price" required
                             #price="ngModel" />
                         <div class="alert-danger" *ngIf="price.errors && f.submitted">
                             <div *ngIf="price.errors.required">Price is required</div>
@@ -44,16 +58,27 @@
                     </div>
                     <div class="form-group">
                         <label for="publisher">Publisher</label>
-                        <input type="text" class="form-control" name="publisher" [(ngModel)]="form.publisher" required
-                            #publisher="ngModel" />
+                        <input type="text" class="form-control" name="publisher" [(ngModel)]="form.publisher"
+                            minlength="3" maxlength="50" required #publisher="ngModel" />
                         <div class="alert-danger" *ngIf="publisher.errors && f.submitted">
                             <div *ngIf="publisher.errors.required">Publisher is required</div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label for="active">Active</label>
                         <input type="text" class="form-control" name="active" [(ngModel)]="form.active" required
                             #active="ngModel" />
+                        <div class="alert-danger" *ngIf="active.errors && f.submitted">
+                            <div *ngIf="active.errors.required">Active is required</div>
+                        </div>
+                    </div>-->
+
+                    <div class="form-group">
+                        <label for="active">Active</label>
+                        <input type="radio" value="true" name="active" #active="ngModel" [(ngModel)]="form.active"
+                            required><span>Yes</span>
+                        <input type="radio" value="false" name="active" #active="ngModel" [(ngModel)]="form.active"
+                            required><span>No</span>
                         <div class="alert-danger" *ngIf="active.errors && f.submitted">
                             <div *ngIf="active.errors.required">Active is required</div>
                         </div>
@@ -65,10 +90,13 @@
 
             <div class="form-group">
                 <label for="content">Content</label>
-                <input type="text" class="form-control" name="content" [(ngModel)]="form.content" required
-                    #content="ngModel" />
+                <input type="text" class="form-control" name="content" [(ngModel)]="form.content" minlength="10"
+                    required #content="ngModel" />
                 <div class="alert-danger" *ngIf="content.errors && f.submitted">
                     <div *ngIf="content.errors.required">Content is required</div>
+                    <div *ngIf="content.errors.minlength">
+                        Content must be at least 10 characters
+                    </div>
                 </div>
             </div>
 
@@ -83,10 +111,6 @@
             </div>
         </form>
         <div *ngIf="isSuccessful">
-
-            <div class="form-group text-center">
-                <button class="btn btn-primary btn-md" (click)="ngOnInit()">Create Book</button>
-            </div>
             <div class="alert alert-success">
                 Book registration is successful!
             </div>

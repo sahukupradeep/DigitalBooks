@@ -28,6 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.digitalbook.UserServiceApplication;
 import com.digitalbook.payload.request.Book;
 import com.digitalbook.payload.request.BookSub;
+import com.digitalbook.payload.response.BookResponse;
 import com.digitalbook.payload.response.MessageResponse;
 import com.digitalbook.restapi.service.BookRestApiService;
 import com.digitalbook.util.ConstantValueUtil;
@@ -112,10 +113,10 @@ class BookControllerTest {
 
 	}
 
-	@WithMockUser(roles = {"AUTHOR","GUEST","READER"})
+	@WithMockUser(roles = { "AUTHOR", "GUEST", "READER" })
 	@Test
 	void getByRequestTest() throws Exception {
-		ResponseEntity<List> response = ResponseEntity.ok(List.of());
+		ResponseEntity<List<BookResponse>> response = ResponseEntity.ok(List.of());
 		when(bookRestApiServiceMock.searchBook("category", "title", 1, 4.0, "publisher")).thenReturn(response);
 
 		mockMvc.perform(

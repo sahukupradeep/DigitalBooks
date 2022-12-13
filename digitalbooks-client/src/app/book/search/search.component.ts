@@ -10,11 +10,25 @@ export class SearchComponent implements OnInit {
 
   form: any;
   books:any[]=[];
+  searchElement:any;
   isSuccessful = false;
   isSearchFailed = false;
   errorMessage = '';
 
-  constructor(private bookService:BookService) { }
+  constructor(private bookService:BookService) { 
+    this.loadSearchElement()
+  }
+  loadSearchElement() {
+    
+    this.bookService.loadSearchValue().subscribe(
+      data => {
+        console.log(data);
+        this.searchElement=data;
+      },
+      err => {
+        
+      })
+  }
 
   ngOnInit(): void {
     this.searchPage();

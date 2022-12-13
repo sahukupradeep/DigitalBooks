@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ import com.digitalbook.entity.Role;
 import com.digitalbook.entity.User;
 import com.digitalbook.payload.request.LoginRequest;
 import com.digitalbook.payload.request.SignupRequest;
+import com.digitalbook.payload.response.AuthorResponse;
 import com.digitalbook.payload.response.JwtResponse;
 import com.digitalbook.payload.response.MessageResponse;
 import com.digitalbook.repository.RoleRepository;
@@ -78,7 +80,7 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-		logger.info("  registerUser() ");
+		logger.info("  registerUser() " + signUpRequest.getRole());
 
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
@@ -125,7 +127,8 @@ public class AuthController {
 		user.setRoles(roles);
 		userRepository.save(user);
 
-		//logger.log
+		// logger.log
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
+
 }

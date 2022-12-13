@@ -1,7 +1,9 @@
 <div class="col-md-12">
-    <button *ngIf="isAuthor" class="btn btn-primary btn-md"  routerLink="/create">Create Book</button>
-    <div  class="card" >
-       
+
+    <div class="card container">
+        <div class="form-group">
+            <button *ngIf="isAuthor" class="btn btn-primary btn-md" routerLink="/create">Create Book</button>
+        </div>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -21,12 +23,16 @@
                     <td scope="row">{{i+1}}</td>
                     <td>{{book.logo}}</td>
                     <td>{{book.title}}</td>
-                    <td>{{book.authorId}}</td>
+                    <td>{{book.author}}</td>
                     <td>{{book.publisher}}</td>
                     <td>{{book.price}}</td>
                     <td>{{book.createdDate}}</td>
                     <td>{{book.category}}</td>
-                    <td><button *ngIf="isAuthor" class="btn btn-primary btn-md"  [routerLink]="['/edit',book.id]">Edit</button></td>
+                    <td><button *ngIf="isAuthor" class="btn btn-primary btn-md"
+                            [routerLink]="['/edit',book.id]">Edit</button>
+                        <button *ngIf="!isAuthor" class="btn btn-primary btn-md"
+                            [routerLink]="['/details',book.subId]">View</button>
+                    </td>
                 </tr>
             </tbody>
         </table>

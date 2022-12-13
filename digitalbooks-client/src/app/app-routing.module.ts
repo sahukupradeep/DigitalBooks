@@ -25,9 +25,9 @@ const routes: Routes = [
   { path: 'search', component: SearchComponent },
   { path: 'create', component: CreateComponent },
   { path: 'list', component: ListComponent },
-  { path: 'details', component: DetialsComponent },
+  { path: 'details/:id', component: DetialsComponent },
   { path: 'edit/:id', component:  EditComponent},
-  { path: '', redirectTo: 'home', pathMatch: 'full' }
+  { path: '', redirectTo: 'search', pathMatch: 'full' }
 ];
 
 @NgModule({

@@ -31,4 +31,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
 	List<Book> findByAuthorId(Integer authorId);
 
+	@Query("SELECT b FROM Book b WHERE b.active=true")
+	List<Book> findAllActive();
+
 }

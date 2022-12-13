@@ -1,1 +1,21 @@
-<p>detials works!</p>
+<div class="col-md-12">
+    <div class="form-group text-center">
+        <a href="/list" class="btn btn-success" routerLink="/list">Book List</a>
+
+    </div>
+    <div class="card container">
+        <h3 class="text-center">Book Details</h3>
+        <label for="">Logo : {{book.logo}}</label>
+        <label for="">Title : {{book.title}}</label>
+        <label for="">Category : {{book.category}}</label>
+        <label for="">Author : {{book.authorId}}</label>
+        <label for="">Publisher : {{book.publisher}}</label>
+        
+        <label for="">Content : {{content}}</label>
+        <div class="form-group text-center">
+            <button class="btn btn-success btn-sm" (click)="loadContent(book.id)">Content</button>
+        </div>
+
+    </div>
+
+</div>

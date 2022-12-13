@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.digitalbook.entity.Book;
 import com.digitalbook.payload.response.BookResponse;
 import com.digitalbook.payload.response.MessageResponse;
+import com.digitalbook.payload.response.SearchBookResponse;
 import com.digitalbook.service.BookService;
 import com.digitalbook.util.ConstantValueUtil;
 import com.digitalbook.validator.BookValidator;
@@ -78,8 +79,9 @@ public class BookController {
 	}
 
 	@GetMapping("search")
-	public ResponseEntity<?> getByRequest(@RequestParam(required = false) String category, @RequestParam(required = false) String title,
-			@RequestParam(required = false) Integer author, @RequestParam(required = false) Double price, @RequestParam(required = false) String publisher) {
+	public ResponseEntity<?> getByRequest(@RequestParam(required = false) String category,
+			@RequestParam(required = false) String title, @RequestParam(required = false) Integer author,
+			@RequestParam(required = false) Double price, @RequestParam(required = false) String publisher) {
 
 		logger.info(" getByRequest() category " + category + " title " + title + " price " + price + " publisher "
 				+ publisher);
@@ -96,6 +98,17 @@ public class BookController {
 		logger.info(" getBooksByAuthor() ");
 
 		List<Book> books = bookService.getBooksByAuthor(authorId);
+
+		return ResponseEntity.ok(books);
+
+	}
+
+	@GetMapping("get-all/books")
+	public ResponseEntity<?> getActiveBook() {
+
+		logger.info(" getBooksByAuthor() ");
+
+		SearchBookResponse books = bookService.getList();
 
 		return ResponseEntity.ok(books);
 

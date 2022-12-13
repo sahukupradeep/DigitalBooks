@@ -42,7 +42,7 @@ export class EditComponent implements OnInit {
   onSubmit(): void {
     const {logo,title, category, price,publisher,active,content} = this.book;
     console.log(logo,title, category, price,publisher,active,content);
-    /*this.bookService.create(logo,title, category, price,publisher,active,content).subscribe(
+    this.bookService.update(this.book).subscribe(
       data => {
         this.book=data;
         console.log(data);
@@ -52,7 +52,7 @@ export class EditComponent implements OnInit {
       err => {
         this.errorMessage = err.error.message;
         this.isUpdateFailed = true;
-      })*/
+      })
   }
 
 }

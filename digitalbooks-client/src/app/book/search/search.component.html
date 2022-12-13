@@ -6,43 +6,38 @@
 
             <div class="form-group">
                 <label for="category">Category</label>
-                <input type="text" class="form-control" name="category" [(ngModel)]="form.category" required
+                <!--<input type="text" class="form-control" name="category" [(ngModel)]="form.category" required
                     #category="ngModel" />
                 <div class="alert-danger" *ngIf="category.errors && f.submitted">
                     <div *ngIf="category.errors.required">Category is required</div>
-                </div>
+                </div>-->
+                <select [(ngModel)]="form.category" class="form-control" name="category">
+                    <option *ngFor="let data of searchElement.categorySet" [ngValue]="data">{{data}}</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" class="form-control" name="title" [(ngModel)]="form.title" required
-                    #title="ngModel" />
-                <div class="alert-danger" *ngIf="title.errors && f.submitted">
-                    <div *ngIf="title.errors.required">Title is required</div>
-                </div>
+                <select [(ngModel)]="form.title" class="form-control" name="title">
+                    <option *ngFor="let data of searchElement.titleSet" [ngValue]="data">{{data}}</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="author">Author</label>
-                <input type="text" class="form-control" name="author" [(ngModel)]="form.author" required
-                    #author="ngModel" />
-                <div class="alert-danger" *ngIf="author.errors && f.submitted">
-                    <div *ngIf="author.errors.required">Author is required</div>
-                </div>
+                <select [(ngModel)]="form.author" class="form-control" name="author">
+                    <option *ngFor="let data of searchElement.listAuther" [ngValue]="data.id">{{data.name}}</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="price">Price</label>
-                <input type="text" class="form-control" name="price" [(ngModel)]="form.price" required
-                    #price="ngModel" />
-                <div class="alert-danger" *ngIf="price.errors && f.submitted">
-                    <div *ngIf="price.errors.required">Price is required</div>
-                </div>
+                <select [(ngModel)]="form.price" class="form-control" name="price">
+                    <option *ngFor="let data of searchElement.priceSet" [ngValue]="data">{{data}}</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="publisher">Publisher</label>
-                <input type="text" class="form-control" name="publisher" [(ngModel)]="form.publisher" required
-                    #publisher="ngModel" />
-                <div class="alert-danger" *ngIf="publisher.errors && f.submitted">
-                    <div *ngIf="publisher.errors.required">Publisher is required</div>
-                </div>
+                <select [(ngModel)]="form.publisher" class="form-control" name="publisher">
+                    <option *ngFor="let data of searchElement.publisherSet" [ngValue]="data">{{data}}</option>
+                </select>
             </div>
 
             <div class="form-group text-center">
@@ -56,8 +51,8 @@
 
 
     </div>
-    <div  class="card"  *ngIf="isSuccessful">
-        <button class="btn btn-primary btn-md"  (click)="ngOnInit()">Back</button>
+    <div class="card" *ngIf="isSuccessful">
+        <button class="btn btn-primary btn-md" (click)="ngOnInit()">Back</button>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -77,10 +72,10 @@
                     <td scope="row">{{i+1}}</td>
                     <td>{{book.logo}}</td>
                     <td>{{book.title}}</td>
-                    <td>{{book.authorId}}</td>
+                    <td>{{book.author}}</td>
                     <td>{{book.publisher}}</td>
                     <td>{{book.price}}</td>
-                    <td>{{book.publishedDate}}</td>
+                    <td>{{book.createdDate}}</td>
                     <td>{{book.category}}</td>
                 </tr>
             </tbody>
