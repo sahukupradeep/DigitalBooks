@@ -153,6 +153,12 @@ class BookControllerTest {
 				// TODO Auto-generated method stub
 				return null;
 			}
+
+			@Override
+			public Integer getBookId() {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 	}
 

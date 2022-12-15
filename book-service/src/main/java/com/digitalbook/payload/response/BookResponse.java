@@ -10,22 +10,24 @@ import com.digitalbook.entity.BookSub;
 
 @Projection(types = { Book.class, BookSub.class })
 public interface BookResponse {
+	
+	Integer getBookId();
 
-	public String getLogo();
+	String getLogo();
 
-	public String getTitle();
+	String getTitle();
 
-	public Integer getAuthorId();
+	Integer getAuthorId();
 
-	public String getPublisher();
+	String getPublisher();
 
-	public Double getPrice();
+	Double getPrice();
 
-	public LocalDateTime getCreatedDate();
+	LocalDateTime getCreatedDate();
 
-	public String getCategory();
+	String getCategory();
 
-	public Integer getSubId();
+	Integer getSubId();
 
 	LocalDate getSubDate();
 

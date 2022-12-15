@@ -53,8 +53,8 @@ class BookControllerTest {
 	@Test
 	void createBookTest() throws Exception {
 
-		ResponseEntity<MessageResponse> response = ResponseEntity.status(HttpStatus.CREATED)
-				.body(new MessageResponse("Book registered successfully!"));
+		ResponseEntity<Integer> response = ResponseEntity.status(HttpStatus.CREATED)
+				.body(1);
 
 		when(bookRestApiServiceMock.createBook(any(Book.class))).thenReturn(response);
 
@@ -129,8 +129,8 @@ class BookControllerTest {
 	@Test
 	void subscribeBookTest() throws Exception {
 
-		ResponseEntity<MessageResponse> response = ResponseEntity.status(HttpStatus.CREATED)
-				.body(new MessageResponse("Book subscribed successfully!"));
+		ResponseEntity<Integer> response = ResponseEntity.status(HttpStatus.CREATED)
+				.body(1);
 
 		when(bookRestApiServiceMock.subscribeBook(any(BookSub.class))).thenReturn(response);
 

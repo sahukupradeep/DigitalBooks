@@ -18,7 +18,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
 	Optional<Book> findByIdAndAuthorId(Integer bookId, Integer authorId);
 
-	@Query("SELECT b.logo as logo,b.title as title,b.authorId as authorId,b.publisher as publisher,b.price as price,"
+	@Query("SELECT b.id as bookId,b.logo as logo,b.title as title,b.authorId as authorId,b.publisher as publisher,b.price as price,"
 			+ "b.createdDate as createdDate,b.category as category FROM Book b WHERE b.active=true and "
 			+ "(:category is null or b.category = :category) and (:title is null or b.title = :title) and "
 			+ "(:authorId is null or b.authorId=:authorId) and (:price is null or b.price=:price) and "

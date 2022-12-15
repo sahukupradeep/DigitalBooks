@@ -35,13 +35,13 @@ public class BookController {
 	private BookService bookService;
 
 	@PostMapping("save")
-	public ResponseEntity<?> createBook(@Valid @RequestBody Book book) {
+	public ResponseEntity<Integer> createBook(@Valid @RequestBody Book book) {
 
 		logger.info(" createBook() {}" + book);
 		BookValidator.validate(book);
-		bookService.createBook(book);
+		Book result  = bookService.createBook(book);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("Book registered successfully!"));
+		return ResponseEntity.status(HttpStatus.CREATED).body(result.getId());
 
 	}
 
@@ -69,10 +69,11 @@ public class BookController {
 	}
 
 	@GetMapping("/author/{authorId}/book/{bookId}")
-	public ResponseEntity<Book> getBook(@PathVariable Integer authorId, @PathVariable Integer bookId) {
+	public ResponseEntity<Book> getBooksByAuthorBookId(@PathVariable Integer authorId, @PathVariable Integer bookId) {
 
 		logger.info(" getBook() Author " + authorId + " Book " + bookId);
-		Book book = bookService.getBook(authorId, bookId);
+		
+		Book book = bookService.getBookByAuthorBookId(authorId, bookId);
 
 		return ResponseEntity.ok(book);
 
@@ -80,13 +81,13 @@ public class BookController {
 
 	@GetMapping("search")
 	public ResponseEntity<?> getByRequest(@RequestParam(required = false) String category,
-			@RequestParam(required = false) String title, @RequestParam(required = false) Integer author,
+			@RequestParam(required = false) String title, @RequestParam(required = false) Integer authorId,
 			@RequestParam(required = false) Double price, @RequestParam(required = false) String publisher) {
 
 		logger.info(" getByRequest() category " + category + " title " + title + " price " + price + " publisher "
 				+ publisher);
 
-		List<BookResponse> books = bookService.getByRequest(category, title, author, price, publisher);
+		List<BookResponse> books = bookService.getByRequest(category, title, authorId, price, publisher);
 
 		return ResponseEntity.ok(books);
 
@@ -104,11 +105,11 @@ public class BookController {
 	}
 
 	@GetMapping("get-all/books")
-	public ResponseEntity<?> getActiveBook() {
+	public ResponseEntity<?> getListBookRes() {
 
 		logger.info(" getBooksByAuthor() ");
 
-		SearchBookResponse books = bookService.getList();
+		SearchBookResponse books = bookService.getListBookRes();
 
 		return ResponseEntity.ok(books);
 

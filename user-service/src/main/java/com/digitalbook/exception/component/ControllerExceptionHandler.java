@@ -7,6 +7,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -60,6 +62,22 @@ public class ControllerExceptionHandler {
 		});
 
 		return new MessageResponse(ex.getMessage());
+	}
+	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED) // 401
+	@ExceptionHandler(AccessDeniedException.class)
+	public MessageResponse handleGeneralError(AccessDeniedException ex) {
+
+		logger.error("Error :" + ex);
+		return new MessageResponse("Error : " + ex.getMessage());
+	}
+	
+	@ResponseStatus(HttpStatus.FORBIDDEN) // 403
+	@ExceptionHandler(BadCredentialsException.class)
+	public MessageResponse handleGeneralError(BadCredentialsException ex) {
+
+		logger.error("Error :" + ex);
+		return new MessageResponse("Error : " + ex.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500

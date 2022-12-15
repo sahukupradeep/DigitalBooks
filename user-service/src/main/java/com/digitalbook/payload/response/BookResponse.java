@@ -10,6 +10,8 @@ public class BookResponse {
 	 */
 	private Integer id;
 
+	private Integer bookId;
+
 	private String logo;
 
 	private String title;
@@ -42,6 +44,14 @@ public class BookResponse {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Integer getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
 	}
 
 	public String getLogo() {

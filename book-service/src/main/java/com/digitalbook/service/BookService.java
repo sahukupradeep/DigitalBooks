@@ -29,7 +29,7 @@ public class BookService {
 
 	public Book createBook(Book book) {
 
-		logger.info("createBook() {}" + book);
+		logger.info("createBook() ");
 
 		Optional<Book> existBook = bookRepository.findByTitleAndAuthorId(book.getTitle(), book.getAuthorId());
 		if (existBook.isPresent()) {
@@ -39,17 +39,23 @@ public class BookService {
 		book.setCreatedDate(LocalDateTime.now());
 		Book result = bookRepository.save(book);
 
-		logger.info("Book Created successfully {}" + result);
+		logger.info("Book Created successfully");
 
 		return result;
 	}
 
 	public Book updateBook(Book book) {
-		logger.info("updateBook() {}" + book);
-		Optional<Book> existBook = bookRepository.findByTitleAndAuthorId(book.getTitle(), book.getAuthorId());
+		logger.info("updateBook()");
+		Optional<Book> existBook = bookRepository.findByIdAndAuthorId(book.getId(), book.getAuthorId());
 
 		if (existBook.isEmpty()) {
 			throw new RequestNotFounException("Error :Requested Book not found : " + book.getTitle());
+		}
+
+		Optional<Book> existBookTitie = bookRepository.findByTitleAndAuthorId(book.getTitle(), book.getAuthorId());
+
+		if (existBookTitie.isPresent() && !existBookTitie.get().getId().equals(book.getId())) {
+			throw new RequestNotFounException("Error :Requested Book Title already present : " + book.getTitle());
 		}
 
 		book.setId(existBook.get().getId());
@@ -57,14 +63,14 @@ public class BookService {
 		book.setUpdatedDate(LocalDateTime.now());
 		Book result = bookRepository.save(book);
 
-		logger.info("Book Updated successfully {}" + result);
+		logger.info("Book Updated successfully");
 
 		return result;
 
 	}
 
 	public Book blockBook(Integer authorId, Integer bookId, String block) {
-		logger.info(" blockBook " + block);
+		logger.info(" blockBook() " + block);
 		Optional<Book> existBook = bookRepository.findByIdAndAuthorId(bookId, authorId);
 		if (existBook.isEmpty()) {
 			throw new RequestNotFounException("Error :Requested Book not found : " + bookId);
@@ -84,15 +90,18 @@ public class BookService {
 		}
 		Book result = bookRepository.save(book);
 
-		logger.info("Book Updated successfully {}" + result);
+		logger.info("Book Updated successfully");
 
 		return result;
 	}
 
-	public List<BookResponse> getByRequest(String category, String title, Integer author, Double price, String publisher) {
+	public List<BookResponse> getByRequest(String category, String title, Integer authorId, Double price,
+			String publisher) {
 
-		List<BookResponse> books = bookRepository.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisherActive(category, title, author,
-				price, publisher);
+		logger.info("getByRequest()");
+
+		List<BookResponse> books = bookRepository.findByCategoryAndTitleAndAuthorIdAndPriceAndPublisherActive(category,
+				title, authorId, price, publisher);
 
 		if (books == null || books.isEmpty()) {
 			throw new RequestNotFounException("Error : Book not found");
@@ -101,6 +110,8 @@ public class BookService {
 	}
 
 	public List<Book> getBooksByAuthor(Integer authorId) {
+
+		logger.info("getBooksByAuthor()");
 		List<Book> books = bookRepository.findByAuthorId(authorId);
 
 		if (books == null || books.isEmpty()) {
@@ -109,8 +120,8 @@ public class BookService {
 		return books;
 	}
 
-	public Book getBook(Integer authorId, Integer bookId) {
-		logger.info(" getBook ");
+	public Book getBookByAuthorBookId(Integer authorId, Integer bookId) {
+		logger.info(" getBookByAuthorBookId() ");
 		Optional<Book> book = bookRepository.findByIdAndAuthorId(bookId, authorId);
 		if (book.isEmpty()) {
 			throw new RequestNotFounException("Error :Requested Book not found : " + bookId);
@@ -118,34 +129,35 @@ public class BookService {
 
 		return book.get();
 	}
-	
-	public SearchBookResponse getList() {
-		
-		List<Book> books=bookRepository.findAllActive();
-		
-		if(books==null || books.isEmpty()) {
+
+	public SearchBookResponse getListBookRes() {
+		logger.info("getListBookRes()");
+
+		List<Book> books = bookRepository.findAllActive();
+
+		if (books == null || books.isEmpty()) {
 			throw new RequestNotFounException("Book Not Found");
 		}
-		
-		SearchBookResponse searchBookResponse=new SearchBookResponse();
-		
-		Set<String> listTitle=books.stream().map(book->book.getTitle()).collect(Collectors.toSet());
+
+		SearchBookResponse searchBookResponse = new SearchBookResponse();
+
+		Set<String> listTitle = books.stream().map(book -> book.getTitle()).collect(Collectors.toSet());
 		searchBookResponse.setTitleSet(listTitle);
-		
-		Set<String> listCategory=books.stream().map(book->book.getCategory()).collect(Collectors.toSet());
+
+		Set<String> listCategory = books.stream().map(book -> book.getCategory()).collect(Collectors.toSet());
 		searchBookResponse.setCategorySet(listCategory);
-		
-		Set<Integer> listAuthorId=books.stream().map(book->book.getAuthorId()).collect(Collectors.toSet());
+
+		Set<Integer> listAuthorId = books.stream().map(book -> book.getAuthorId()).collect(Collectors.toSet());
 		searchBookResponse.setAuthorIdSet(listAuthorId);
-		
-		Set<Double> listPrice=books.stream().map(book->book.getPrice()).collect(Collectors.toSet());
+
+		Set<Double> listPrice = books.stream().map(book -> book.getPrice()).collect(Collectors.toSet());
 		searchBookResponse.setPriceSet(listPrice);
-		
-		Set<String> listPublisher=books.stream().map(book->book.getPublisher()).collect(Collectors.toSet());
+
+		Set<String> listPublisher = books.stream().map(book -> book.getPublisher()).collect(Collectors.toSet());
 		searchBookResponse.setPublisherSet(listPublisher);
-		
+
 		return searchBookResponse;
-		
+
 	}
 
 }

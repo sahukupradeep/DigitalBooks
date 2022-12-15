@@ -44,7 +44,7 @@ class BookSubControllerTest {
 	@Test
 	void subscribeBookSubTest() throws Exception {
 
-		when(bookSubServiceMock.subscribeBookSub(any(BookSub.class))).thenReturn(new BookSub());
+		when(bookSubServiceMock.subscribeBook(any(BookSub.class))).thenReturn(new BookSub());
 
 		mockMvc.perform(post("/api/book-sub/subscribe").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"bookId\": 1, \"readerId\": 1,\"active\":true}").accept(MediaType.APPLICATION_JSON))

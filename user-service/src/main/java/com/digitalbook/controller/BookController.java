@@ -42,13 +42,13 @@ public class BookController {
 
 	@PostMapping("author/{authorId}/books")
 	@PreAuthorize("hasRole('AUTHOR')")
-	public ResponseEntity<MessageResponse> createBook(@Valid @RequestBody Book book, @PathVariable Integer authorId)
+	public ResponseEntity<Integer> createBook(@Valid @RequestBody Book book, @PathVariable Integer authorId)
 			throws Exception {
 
-		logger.info(" createBook() {}" + book);
+		logger.info(" createBook()");
 		book.setAuthorId(authorId);
 		BookValidator.validate(book);
-		ResponseEntity<MessageResponse> responseEntity = bookRestApiService.createBook(book);
+		ResponseEntity<Integer> responseEntity = bookRestApiService.createBook(book);
 
 		return responseEntity;
 
@@ -57,9 +57,9 @@ public class BookController {
 	@PutMapping("author/{authorId}/books/{bookId}")
 	@PreAuthorize("hasRole('AUTHOR')")
 	public ResponseEntity<MessageResponse> updateBook(@Valid @RequestBody Book book, @PathVariable Integer authorId,
-			@PathVariable Integer bookId) {
+			@PathVariable Integer bookId) throws Exception {
 
-		logger.info(" updateBook() {}" + book);
+		logger.info(" updateBook()");
 		book.setAuthorId(authorId);
 		book.setId(bookId);
 		BookValidator.validate(book);
@@ -72,9 +72,9 @@ public class BookController {
 	@PostMapping("author/{authorId}/books/{bookId}")
 	@PreAuthorize("hasRole('AUTHOR')")
 	public ResponseEntity<MessageResponse> blockBook(@PathVariable Integer authorId, @PathVariable Integer bookId,
-			@RequestParam String block) {
+			@RequestParam String block) throws Exception {
 
-		logger.info(" blockBook() {}");
+		logger.info(" blockBook()");
 		ResponseEntity<MessageResponse> responseEntity = bookRestApiService.blockBook(authorId, bookId, block);
 
 		return responseEntity;
@@ -83,9 +83,10 @@ public class BookController {
 
 	@GetMapping("author/{authorId}/books")
 	@PreAuthorize("hasRole('AUTHOR')")
-	public ResponseEntity<List<BookResponse>> getBooksByAuthor(@PathVariable Integer authorId) throws JsonMappingException, JsonProcessingException {
+	public ResponseEntity<List<BookResponse>> getBooksByAuthor(@PathVariable Integer authorId)
+			throws JsonMappingException, JsonProcessingException {
 
-		logger.info(" getBooksByAuthor() {}");
+		logger.info(" getBooksByAuthor()");
 		ResponseEntity<List<BookResponse>> responseEntity = bookRestApiService.getBooksByAuthor(authorId);
 
 		return responseEntity;
@@ -97,7 +98,7 @@ public class BookController {
 	public ResponseEntity<Book> getBooksByAuthorAndBookId(@PathVariable Integer authorId, @PathVariable Integer bookId)
 			throws Exception {
 
-		logger.info(" getBooksByAuthorAndBookId() {}");
+		logger.info(" getBooksByAuthorAndBookId()");
 		ResponseEntity<Book> responseEntity = bookRestApiService.getBooksByAuthorAndBookId(authorId, bookId);
 
 		return responseEntity;
@@ -105,14 +106,27 @@ public class BookController {
 	}
 
 	@GetMapping("search")
-	// @PreAuthorize("hasRole('GUEST') or hasRole('AUTHOR') or hasRole('READER')")
 	public ResponseEntity<List<BookResponse>> searchBooks(@RequestParam(required = false) String category,
 			@RequestParam(required = false) @Nullable String title, @RequestParam(required = false) Integer author,
 			@RequestParam(required = false) Double price, @RequestParam(required = false) String publisher)
 			throws JsonMappingException, JsonProcessingException {
 
-		logger.info(" searchBook() {} ");
+		logger.info(" searchBook()");
 		ResponseEntity<List<BookResponse>> responseEntity = bookRestApiService.searchBook(category, title, author,
+				price, publisher);
+
+		return responseEntity;
+
+	}
+
+	@GetMapping("v2/search")
+	public ResponseEntity<List<BookResponse>> searchBooksV2(@RequestParam(required = false) String category,
+			@RequestParam(required = false) @Nullable String title, @RequestParam(required = false) String author,
+			@RequestParam(required = false) Double price, @RequestParam(required = false) String publisher)
+			throws JsonMappingException, JsonProcessingException {
+
+		logger.info(" searchBook()");
+		ResponseEntity<List<BookResponse>> responseEntity = bookRestApiService.searchBookV2(category, title, author,
 				price, publisher);
 
 		return responseEntity;
@@ -121,22 +135,23 @@ public class BookController {
 
 	@PostMapping("readers/{bookId}/subscribe")
 	@PreAuthorize("hasRole('READER')")
-	public ResponseEntity<MessageResponse> subscribeBook(@Valid @RequestBody BookSub bookSub,
-			@PathVariable Integer bookId) {
+	public ResponseEntity<Integer> subscribeBook(@Valid @RequestBody BookSub bookSub, @PathVariable Integer bookId)
+			throws Exception {
 
-		logger.info(" subscribeBook() {}" + bookSub);
+		logger.info(" subscribeBook()");
 
-		ResponseEntity<MessageResponse> responseEntity = bookRestApiService.subscribeBook(bookSub);
+		ResponseEntity<Integer> responseEntity = bookRestApiService.subscribeBook(bookSub);
 
 		return responseEntity;
 
 	}
 
 	@GetMapping("readers/{emailId}/books")
-//	@PreAuthorize("hasRole('READER')")
-	public ResponseEntity<List<BookResponse>> getAllReaderBook(@PathVariable String emailId) throws JsonMappingException, JsonProcessingException {
+	@PreAuthorize("hasRole('READER')")
+	public ResponseEntity<List<BookResponse>> getAllReaderBook(@PathVariable String emailId)
+			throws JsonMappingException, JsonProcessingException {
 
-		logger.info(" getAllReaderBook() {}");
+		logger.info(" getAllReaderBook()");
 		ResponseEntity<List<BookResponse>> responseEntity = bookRestApiService.getAllReaderBook(emailId);
 
 		return responseEntity;
@@ -144,11 +159,11 @@ public class BookController {
 	}
 
 	@GetMapping("readers/{emailId}/books/{subId}")
-//	@PreAuthorize("hasRole('READER')")
+	@PreAuthorize("hasRole('READER')")
 	public ResponseEntity<Book> getReaderBook(@PathVariable String emailId, @PathVariable Integer subId)
 			throws Exception {
 
-		logger.info(" getReaderBook() {}");
+		logger.info(" getReaderBook()");
 		ResponseEntity<Book> responseEntity = bookRestApiService.getBookByReaderAndSubId(emailId, subId);
 
 		return responseEntity;
@@ -156,13 +171,12 @@ public class BookController {
 	}
 
 	@GetMapping("readers/{emailId}/books/{subId}/read")
-//	@PreAuthorize("hasRole('READER')")
-	public ResponseEntity<String> getReaderBookRead(@PathVariable String emailId, @PathVariable Integer subId) {
+	@PreAuthorize("hasRole('READER')")
+	public ResponseEntity<String> getReaderBookRead(@PathVariable String emailId, @PathVariable Integer subId)
+			throws Exception {
 
-		logger.info(" getReaderBookRead() {}");
+		logger.info(" getReaderBookRead()");
 		ResponseEntity<String> responseEntity = bookRestApiService.getContentByReaderAndSubId(emailId, subId);
-
-		// System.out.println(responseEntity.getBody()+" !!!!!!!!!!!!!!!! ");
 
 		return responseEntity;
 
@@ -170,9 +184,10 @@ public class BookController {
 
 	@PostMapping("readers/{emailId}/books/{subId}/cancel-subscription")
 	@PreAuthorize("hasRole('READER')")
-	public ResponseEntity<MessageResponse> cancelReaderBook(@PathVariable String emailId, @PathVariable Integer subId) {
+	public ResponseEntity<MessageResponse> cancelReaderBook(@PathVariable String emailId, @PathVariable Integer subId)
+			throws Exception {
 
-		logger.info(" getReaderBook() {}");
+		logger.info(" getReaderBook()");
 		ResponseEntity<MessageResponse> responseEntity = bookRestApiService.cancelByReaderAndSubId(emailId, subId);
 
 		return responseEntity;
@@ -180,10 +195,9 @@ public class BookController {
 	}
 
 	@GetMapping("get-all/books")
-//	@PreAuthorize("hasRole('READER')")
 	public ResponseEntity<SearchBookResponse> getAllBook() throws Exception {
 
-		logger.info(" getReaderBook() {}");
+		logger.info(" getReaderBook()");
 		ResponseEntity<SearchBookResponse> responseEntity = bookRestApiService.getAllBook();
 
 		return responseEntity;

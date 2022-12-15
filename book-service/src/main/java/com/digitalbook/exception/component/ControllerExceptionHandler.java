@@ -40,7 +40,7 @@ public class ControllerExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public MessageResponse handleGeneralError(MethodArgumentNotValidException ex) {
 
-		logger.error("Argument not valid " + ex);
+		logger.error("Error : Argument not valid " + ex);
 
 		List<FieldError> errors = ex.getFieldErrors();
 		Map<String, String> errorMap = new HashMap<>();
@@ -58,7 +58,7 @@ public class ControllerExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public MessageResponse handleGeneralError(Exception ex) {
 
-		logger.error("An error occurred procesing request" + ex);
+		logger.error("Error : An error occurred procesing request" + ex);
 		return new MessageResponse("Error : An error occurred procesing request " + ex.getMessage());
 	}
 }

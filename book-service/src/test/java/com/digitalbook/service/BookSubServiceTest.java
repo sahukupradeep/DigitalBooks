@@ -50,7 +50,7 @@ class BookSubServiceTest {
 
 		when(bookSubRepositoryMock.save(bookSub)).thenReturn(bookSub);
 
-		Assertions.assertEquals(bookSub, bookSubService.subscribeBookSub(bookSub));
+		Assertions.assertEquals(bookSub, bookSubService.subscribeBook(bookSub));
 
 	}
 
@@ -66,7 +66,7 @@ class BookSubServiceTest {
 		when(bookRepositoryMock.findById(bookSub.getBookId())).thenReturn(optionalB);
 
 		Assertions.assertThrows(RequestNotFounException.class, () -> {
-			bookSubService.subscribeBookSub(bookSub);
+			bookSubService.subscribeBook(bookSub);
 		});
 
 	}
@@ -87,7 +87,7 @@ class BookSubServiceTest {
 				.thenReturn(optionalBS);
 
 		Assertions.assertThrows(InvalidRequestException.class, () -> {
-			bookSubService.subscribeBookSub(bookSub);
+			bookSubService.subscribeBook(bookSub);
 		});
 
 	}
@@ -102,7 +102,6 @@ class BookSubServiceTest {
 		bookSub.setBookId(1);
 		bookSub.setReaderId(1);
 
-		List<BookSub> bookSubs = List.of(bookSub);
 		List<Integer> listBookId = List.of(1);
 		List<Book> books = List.of(new Book());
 		List<BookResponse> bookResponses = List.of(this.newBookResponse());
@@ -240,6 +239,12 @@ class BookSubServiceTest {
 
 			@Override
 			public LocalDate getSubDate() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Integer getBookId() {
 				// TODO Auto-generated method stub
 				return null;
 			}

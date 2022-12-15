@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.digitalbook.entity.Book;
 import com.digitalbook.entity.BookSub;
 import com.digitalbook.payload.response.BookResponse;
 import com.digitalbook.payload.response.MessageResponse;
@@ -31,12 +30,12 @@ public class BookSubController {
 	private BookSubService bookSubService;
 
 	@PostMapping("subscribe")
-	public ResponseEntity<?> subscribeBookSub(@Valid @RequestBody BookSub bookSub) {
+	public ResponseEntity<Integer> subscribeBookSub(@Valid @RequestBody BookSub bookSub) {
 
 		logger.info(" subscribeBookSub() {}" + bookSub);
-		bookSubService.subscribeBookSub(bookSub);
+		BookSub result = bookSubService.subscribeBook(bookSub);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("Book subscribed successfully!"));
+		return ResponseEntity.status(HttpStatus.CREATED).body(result.getId());
 
 	}
 
@@ -49,33 +48,33 @@ public class BookSubController {
 		return ResponseEntity.ok(books);
 
 	}
-	
+
 	@GetMapping("get/{readerId}/{subId}")
-	public ResponseEntity<?> getByReaderAndSubId(@PathVariable Integer readerId,@PathVariable Integer subId) {
+	public ResponseEntity<?> getByReaderAndSubId(@PathVariable Integer readerId, @PathVariable Integer subId) {
 
 		logger.info(" getByReaderAndSubId() {}" + readerId);
-		BookResponse book = bookSubService.getByReadeIdAndSubId(readerId,subId);
+		BookResponse book = bookSubService.getByReadeIdAndSubId(readerId, subId);
 
 		return ResponseEntity.ok(book);
 
 	}
-	
+
 	@GetMapping("content/{readerId}/{subId}")
-	public ResponseEntity<?> contentByReaderAndSubId(@PathVariable Integer readerId,@PathVariable Integer subId) {
+	public ResponseEntity<?> contentByReaderAndSubId(@PathVariable Integer readerId, @PathVariable Integer subId) {
 
 		logger.info(" contentByReaderAndSubId() {}" + readerId);
-		String content = bookSubService.contentByReaderAndSubId(readerId,subId);
+		String content = bookSubService.contentByReaderAndSubId(readerId, subId);
 
 		return ResponseEntity.ok(content);
 
 	}
-	
+
 	@PostMapping("cancel-sub/{readerId}/{subId}")
-	public ResponseEntity<?> cancelSubByReaderAndSubId(@PathVariable Integer readerId,@PathVariable Integer subId) {
+	public ResponseEntity<?> cancelSubByReaderAndSubId(@PathVariable Integer readerId, @PathVariable Integer subId) {
 
 		logger.info(" readByReaderAndSubId() {}" + readerId);
-		
-		bookSubService.cancelSubByReaderAndSubId(readerId,subId);
+
+		bookSubService.cancelSubByReaderAndSubId(readerId, subId);
 
 		return ResponseEntity.ok(new MessageResponse("Cancel subscription successfully!"));
 

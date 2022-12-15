@@ -133,11 +133,10 @@ class BookRestApiServiceTest {
 	}
 
 	@Test
-	void subscribeBookTest() {
+	void subscribeBookTest() throws Exception {
 
 		BookSub bookSub = new BookSub();
 
-		Book book = new Book();
 		String url = "http://localhost:8081/api/book-sub/subscribe";
 
 		ResponseEntity<MessageResponse> response = ResponseEntity.status(HttpStatus.CREATED)

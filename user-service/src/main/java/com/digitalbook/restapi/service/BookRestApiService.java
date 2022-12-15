@@ -56,19 +56,19 @@ public class BookRestApiService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	public ResponseEntity<MessageResponse> createBook(Book book) throws Exception {
+	public ResponseEntity<Integer> createBook(Book book) throws Exception {
 
-		logger.info(" createBook() {} " + book);
+		logger.info(" createBook() ");
 
 		Optional<User> user = userRepository.findById((long) book.getAuthorId());
 
 		if (user.isEmpty()) {
-			throw new RequestNotFounException(" Author Not Found");
+			throw new RequestNotFounException("Error : Author Not Found");
 		}
 
 		try {
-			ResponseEntity<MessageResponse> response = restTemplate.postForEntity(commonRestApiUrl.getCreateBookUrl(),
-					book, MessageResponse.class);
+			ResponseEntity<Integer> response = restTemplate.postForEntity(commonRestApiUrl.getCreateBookUrl(), book,
+					Integer.class);
 			return response;
 		} catch (HttpClientErrorException e) {
 			throw RestApiExceptionUtil.throwClientException(e);
@@ -76,36 +76,42 @@ public class BookRestApiService {
 
 	}
 
-	public ResponseEntity<MessageResponse> updateBook(Book book) {
+	public ResponseEntity<MessageResponse> updateBook(Book book) throws Exception {
 
-		logger.info(" updateBook() {} " + book);
+		logger.info(" updateBook()");
 
-		restTemplate.put(commonRestApiUrl.getUpdateBookUrl(), book);
-
-		return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("Book updated successfully!"));
+		try {
+			restTemplate.put(commonRestApiUrl.getUpdateBookUrl(), book);
+			return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("Book updated successfully!"));
+		} catch (HttpClientErrorException e) {
+			throw RestApiExceptionUtil.throwClientException(e);
+		}
 
 	}
 
-	public ResponseEntity<MessageResponse> blockBook(Integer authorId, Integer bookId, String block) {
+	public ResponseEntity<MessageResponse> blockBook(Integer authorId, Integer bookId, String block) throws Exception {
 
-		logger.info(" blockBook() {} " + bookId);
-
-		ResponseEntity<MessageResponse> response = null;
+		logger.info(" blockBook()");
 
 		String url = commonStringUtil.replaceAll("authorId", "" + authorId, commonRestApiUrl.getBlockBookUrl());
-		url = commonStringUtil.replaceAll("bookId", "" + bookId, commonRestApiUrl.getBlockBookUrl());
+		url = commonStringUtil.replaceAll("bookId", "" + bookId, url);
 
 		Map<String, Object> reqParam = new HashMap<>();
 
-		response = restTemplate.postForEntity(url + "?block=" + block, reqParam, MessageResponse.class);
+		try {
 
-		return response;
+			ResponseEntity<MessageResponse> response = restTemplate.postForEntity(url + "?block=" + block, reqParam,
+					MessageResponse.class);
+			return response;
+		} catch (HttpClientErrorException e) {
+			throw RestApiExceptionUtil.throwClientException(e);
+		}
 
 	}
 
 	public ResponseEntity<List<BookResponse>> searchBook(String category, String title, Integer author, Double price,
 			String publisher) throws JsonMappingException, JsonProcessingException {
-		logger.info(" createBook() {} ");
+		logger.info(" searchBook()");
 		ResponseEntity<List<BookResponse>> response = null;
 
 		Map<String, String> mapParam = new LinkedHashMap<>();
@@ -160,20 +166,85 @@ public class BookRestApiService {
 
 	}
 
-	public ResponseEntity<MessageResponse> subscribeBook(BookSub bookSub) {
+	public ResponseEntity<List<BookResponse>> searchBookV2(String category, String title, String author, Double price,
+			String publisher) throws JsonMappingException, JsonProcessingException {
+		logger.info(" searchBookV2()");
+		ResponseEntity<List<BookResponse>> response = null;
 
-		logger.info(" subscribeBook() {} " + bookSub);
+		Map<String, String> mapParam = new LinkedHashMap<>();
 
-		ResponseEntity<MessageResponse> response = null;
+		if (category != null) {
+			mapParam.put("category", "" + category);
+		}
+		if (title != null) {
+			mapParam.put("title", "" + title);
+		}
+		if (author != null) {
 
-		response = restTemplate.postForEntity(commonRestApiUrl.getSubscribeBookUrl(), bookSub, MessageResponse.class);
+			Optional<User> user = userRepository.findByUsername(author);
+			if (user.isEmpty()) {
+				throw new RequestNotFounException("Error: Book not found");
+			}
+			mapParam.put("authorId", "" + user.get().getId());
+		}
+		if (price != null) {
+			mapParam.put("price", "" + price);
+		}
+		if (publisher != null) {
+			mapParam.put("publisher", "" + publisher);
+		}
+
+		String urlParam = "";
+
+		for (Entry<String, String> entry : mapParam.entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue();
+			if (urlParam.length() > 0) {
+				urlParam += "&" + key + "=" + value;
+			} else {
+				urlParam += "?" + key + "=" + value;
+			}
+		}
+		ResponseEntity<String> response1 = null;
+		response1 = restTemplate.getForEntity(commonRestApiUrl.getSearchBookUrl() + urlParam, String.class);
+		String resMsg = response1.getBody();
+
+		List<User> users = userRepository.findAll();
+
+		Map<Long, List<User>> map = users.stream().collect(Collectors.groupingBy(User::getId, Collectors.toList()));
+
+		List<BookResponse> bookResponses = objectMapper.readValue(resMsg, new TypeReference<List<BookResponse>>() {
+		});
+		for (BookResponse bookResponse : bookResponses) {
+			List<User> listUser = map.get((long) bookResponse.getAuthorId());
+			if (listUser != null && !listUser.isEmpty()) {
+				bookResponse.setAuthor(listUser.get(0).getUsername());
+			}
+		}
+
+		response = ResponseEntity.status(response1.getStatusCode()).body(bookResponses);
 
 		return response;
+	}
+
+	public ResponseEntity<Integer> subscribeBook(BookSub bookSub) throws Exception {
+
+		logger.info(" subscribeBook()");
+
+		try {
+
+			ResponseEntity<Integer> response = restTemplate.postForEntity(commonRestApiUrl.getSubscribeBookUrl(),
+					bookSub, Integer.class);
+			return response;
+		} catch (HttpClientErrorException e) {
+			throw RestApiExceptionUtil.throwClientException(e);
+		}
 
 	}
 
-	public ResponseEntity<List<BookResponse>> getAllReaderBook(String emailId) throws JsonMappingException, JsonProcessingException {
-		logger.info(" getAllReaderBook() {} ");
+	public ResponseEntity<List<BookResponse>> getAllReaderBook(String emailId)
+			throws JsonMappingException, JsonProcessingException {
+		logger.info(" getAllReaderBook()");
 
 		Optional<User> user = userRepository.findByEmail(emailId);
 
@@ -210,7 +281,7 @@ public class BookRestApiService {
 	}
 
 	public ResponseEntity<Book> getBookByReaderAndSubId(String emailId, Integer subId) throws Exception {
-		logger.info(" getBookByReaderAndSubId() {} ");
+		logger.info(" getBookByReaderAndSubId()");
 
 		Optional<User> user = userRepository.findByEmail(emailId);
 
@@ -224,6 +295,13 @@ public class BookRestApiService {
 
 		try {
 			ResponseEntity<Book> response = restTemplate.getForEntity(url, Book.class);
+
+			Book book = response.getBody();
+			Optional<User> author = userRepository.findById((long) book.getAuthorId());
+			BookResponse bookResponse = new BookResponse();
+			if (author.isPresent()) {
+//				bookResponse.getSubId()
+			}
 			return response;
 		} catch (HttpClientErrorException e) {
 			throw RestApiExceptionUtil.throwClientException(e);
@@ -231,37 +309,36 @@ public class BookRestApiService {
 
 	}
 
-	public ResponseEntity<String> getContentByReaderAndSubId(String emailId, Integer subId) {
-		logger.info(" getContentByReaderAndSubId() {} ");
+	public ResponseEntity<String> getContentByReaderAndSubId(String emailId, Integer subId) throws Exception {
+		logger.info(" getContentByReaderAndSubId()");
 
 		Optional<User> user = userRepository.findByEmail(emailId);
 
 		if (user.isEmpty()) {
 			throw new RequestNotFounException(" User Not Found");
 		}
-
-		ResponseEntity<String> response = null;
 
 		String url = commonStringUtil.replaceAll("readerId", "" + user.get().getId(),
 				commonRestApiUrl.getContentReaderSubBookUrl());
 		url = commonStringUtil.replaceAll("subId", "" + subId, url);
 
-		response = restTemplate.getForEntity(url, String.class);
-
-		return response;
+		try {
+			ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+			return response;
+		} catch (HttpClientErrorException e) {
+			throw RestApiExceptionUtil.throwClientException(e);
+		}
 
 	}
 
-	public ResponseEntity<MessageResponse> cancelByReaderAndSubId(String emailId, Integer subId) {
-		logger.info(" cancelByReaderAndSubId() {} ");
+	public ResponseEntity<MessageResponse> cancelByReaderAndSubId(String emailId, Integer subId) throws Exception {
+		logger.info(" cancelByReaderAndSubId()");
 
 		Optional<User> user = userRepository.findByEmail(emailId);
 
 		if (user.isEmpty()) {
 			throw new RequestNotFounException(" User Not Found");
 		}
-
-		ResponseEntity<MessageResponse> response = null;
 
 		String url = commonStringUtil.replaceAll("readerId", "" + user.get().getId(),
 				commonRestApiUrl.getCancelSubBookUrl());
@@ -269,16 +346,19 @@ public class BookRestApiService {
 
 		Map<String, Object> reqParam = new HashMap<>();
 
-		response = restTemplate.postForEntity(url, reqParam, MessageResponse.class);
-
-		return response;
+		try {
+			ResponseEntity<MessageResponse> response = restTemplate.postForEntity(url, reqParam, MessageResponse.class);
+			return response;
+		} catch (HttpClientErrorException e) {
+			throw RestApiExceptionUtil.throwClientException(e);
+		}
 
 	}
 
 	public ResponseEntity<List<BookResponse>> getBooksByAuthor(Integer authorId)
 			throws JsonMappingException, JsonProcessingException {
 
-		logger.info(" createBook() {} ");
+		logger.info(" createBook()");
 
 		Optional<User> user = userRepository.findById((long) authorId);
 
@@ -324,7 +404,7 @@ public class BookRestApiService {
 	}
 
 	public ResponseEntity<SearchBookResponse> getAllBook() {
-		logger.info(" getAllBook() {} ");
+		logger.info(" getAllBook()");
 
 		ResponseEntity<SearchBookResponse> response = null;
 

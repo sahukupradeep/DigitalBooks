@@ -12,10 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.digitalbook.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * @author PRADEEP
- *
- */
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
