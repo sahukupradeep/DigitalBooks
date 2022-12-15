@@ -55,7 +55,7 @@ public class BookService {
 		Optional<Book> existBookTitie = bookRepository.findByTitleAndAuthorId(book.getTitle(), book.getAuthorId());
 
 		if (existBookTitie.isPresent() && !existBookTitie.get().getId().equals(book.getId())) {
-			throw new RequestNotFounException("Error :Requested Book Title already present : " + book.getTitle());
+			throw new InvalidRequestException("Error :Requested Book Title already present : " + book.getTitle());
 		}
 
 		book.setId(existBook.get().getId());

@@ -148,48 +148,152 @@ class BookSubServiceTest {
 	}
 
 	@Test
-	void getByReadeIdNullNFE2Test() {
-
-		int readerId = 1;
+	void getByReadeIdAndSubIdTest() {
 
 		BookSub bookSub = new BookSub();
 		bookSub.setId(1);
 		bookSub.setBookId(1);
 		bookSub.setReaderId(1);
 
-		List<BookResponse> bookSubs = List.of(this.newBookResponse());
-		List<Integer> listBookId = List.of(1);
-		List<Book> books = null;
+		BookResponse bookResponse = this.newBookResponse();
+		Optional<BookResponse> optional = Optional.of(bookResponse);
 
-		when(bookSubRepositoryMock.findByReaderId(readerId)).thenReturn(bookSubs);
+		when(bookSubRepositoryMock.findByIdAndReader(bookSub.getId(), bookSub.getReaderId())).thenReturn(optional);
 
-		when(bookRepositoryMock.findByIdIn(listBookId)).thenReturn(books);
+		Assertions.assertEquals(bookResponse,
+				bookSubService.getByReadeIdAndSubId(bookSub.getId(), bookSub.getReaderId()));
+	}
+
+	@Test
+	void getByReadeIdAndSubIdExceptionTest() {
+
+		BookSub bookSub = new BookSub();
+		bookSub.setId(1);
+		bookSub.setBookId(1);
+		bookSub.setReaderId(1);
+
+		Optional<BookResponse> optional = Optional.empty();
+
+		when(bookSubRepositoryMock.findByIdAndReader(bookSub.getId(), bookSub.getReaderId())).thenReturn(optional);
 
 		Assertions.assertThrows(RequestNotFounException.class, () -> {
-			bookSubService.getByReadeId(readerId);
+			bookSubService.getByReadeIdAndSubId(bookSub.getId(), bookSub.getReaderId());
 		});
 	}
 
 	@Test
-	void getByReadeIdEmptyNFE2Test() {
-
-		int readerId = 1;
+	void contentByReaderAndSubIdTest() {
 
 		BookSub bookSub = new BookSub();
 		bookSub.setId(1);
 		bookSub.setBookId(1);
 		bookSub.setReaderId(1);
 
-		List<BookResponse> bookSubs = List.of(this.newBookResponse());
-		List<Integer> listBookId = List.of(1);
-		List<Book> books = List.of();
+		Optional<BookSub> optional = Optional.of(bookSub);
 
-		when(bookSubRepositoryMock.findByReaderId(readerId)).thenReturn(bookSubs);
+		when(bookSubRepositoryMock.findByIdAndReaderId(bookSub.getId(), bookSub.getReaderId())).thenReturn(optional);
 
-		when(bookRepositoryMock.findByIdIn(listBookId)).thenReturn(books);
+		Book book = new Book();
+		book.setContent("content");
+		Optional<Book> optional1 = Optional.of(book);
+		when(bookRepositoryMock.findById(bookSub.getBookId())).thenReturn(optional1);
+		Assertions.assertEquals(book.getContent(),
+				bookSubService.contentByReaderAndSubId(bookSub.getId(), bookSub.getReaderId()));
+	}
+
+	@Test
+	void contentByReaderAndSubIdException1Test() {
+
+		BookSub bookSub = new BookSub();
+		bookSub.setId(1);
+		bookSub.setBookId(1);
+		bookSub.setReaderId(1);
+
+		Optional<BookSub> optional = Optional.of(bookSub);
+
+		when(bookSubRepositoryMock.findByIdAndReaderId(bookSub.getId(), bookSub.getReaderId())).thenReturn(optional);
+
+		Optional<Book> optional1 = Optional.empty();
+		when(bookRepositoryMock.findById(bookSub.getBookId())).thenReturn(optional1);
 
 		Assertions.assertThrows(RequestNotFounException.class, () -> {
-			bookSubService.getByReadeId(readerId);
+			bookSubService.contentByReaderAndSubId(bookSub.getId(), bookSub.getReaderId());
+		});
+	}
+
+	@Test
+	void contentByReaderAndSubIdException2Test() {
+
+		BookSub bookSub = new BookSub();
+		bookSub.setId(1);
+		bookSub.setBookId(1);
+		bookSub.setReaderId(1);
+
+		Optional<BookSub> optional = Optional.empty();
+
+		when(bookSubRepositoryMock.findByIdAndReaderId(bookSub.getId(), bookSub.getReaderId())).thenReturn(optional);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookSubService.contentByReaderAndSubId(bookSub.getId(), bookSub.getReaderId());
+		});
+	}
+	
+	@Test
+	void cancelSubByReaderAndSubIdTest() {
+
+		BookSub bookSub = new BookSub();
+		bookSub.setId(1);
+		bookSub.setBookId(1);
+		bookSub.setReaderId(1);
+
+		Optional<BookSub> optional = Optional.of(bookSub);
+
+		when(bookSubRepositoryMock.findByIdAndReaderId(bookSub.getId(), bookSub.getReaderId())).thenReturn(optional);
+
+		Book book = new Book();
+		book.setContent("content");
+		Optional<Book> optional1 = Optional.of(book);
+		when(bookRepositoryMock.findById(bookSub.getBookId())).thenReturn(optional1);
+		
+		when(bookSubRepositoryMock.save(bookSub)).thenReturn(bookSub);
+		Assertions.assertEquals(book,
+				bookSubService.cancelSubByReaderAndSubId(bookSub.getId(), bookSub.getReaderId()));
+	}
+
+	@Test
+	void cancelSubByReaderAndSubIdException1Test() {
+
+		BookSub bookSub = new BookSub();
+		bookSub.setId(1);
+		bookSub.setBookId(1);
+		bookSub.setReaderId(1);
+
+		Optional<BookSub> optional = Optional.of(bookSub);
+
+		when(bookSubRepositoryMock.findByIdAndReaderId(bookSub.getId(), bookSub.getReaderId())).thenReturn(optional);
+
+		Optional<Book> optional1 = Optional.empty();
+		when(bookRepositoryMock.findById(bookSub.getBookId())).thenReturn(optional1);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookSubService.cancelSubByReaderAndSubId(bookSub.getId(), bookSub.getReaderId());
+		});
+	}
+
+	@Test
+	void cancelSubByReaderAndSubIdException2Test() {
+
+		BookSub bookSub = new BookSub();
+		bookSub.setId(1);
+		bookSub.setBookId(1);
+		bookSub.setReaderId(1);
+
+		Optional<BookSub> optional = Optional.empty();
+
+		when(bookSubRepositoryMock.findByIdAndReaderId(bookSub.getId(), bookSub.getReaderId())).thenReturn(optional);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookSubService.cancelSubByReaderAndSubId(bookSub.getId(), bookSub.getReaderId());
 		});
 	}
 

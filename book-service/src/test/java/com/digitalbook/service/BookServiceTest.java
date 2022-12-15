@@ -17,6 +17,7 @@ import com.digitalbook.entity.Book;
 import com.digitalbook.exception.InvalidRequestException;
 import com.digitalbook.exception.RequestNotFounException;
 import com.digitalbook.payload.response.BookResponse;
+import com.digitalbook.payload.response.SearchBookResponse;
 import com.digitalbook.repository.BookRepository;
 import com.digitalbook.util.ConstantValueUtil;
 
@@ -65,7 +66,9 @@ class BookServiceTest {
 		book.setTitle("title");
 		book.setAuthorId(1);
 		Optional<Book> optional = Optional.of(book);
-		when(bookRepositoryMock.findByTitleAndAuthorId("title", 1)).thenReturn(optional);
+		when(bookRepositoryMock.findByIdAndAuthorId(book.getId(), book.getAuthorId())).thenReturn(optional);
+
+		when(bookRepositoryMock.findByTitleAndAuthorId(book.getTitle(), book.getAuthorId())).thenReturn(optional);
 
 		when(bookRepositoryMock.save(book)).thenReturn(book);
 
@@ -74,14 +77,37 @@ class BookServiceTest {
 	}
 
 	@Test
+	void updateBookRNFExceptionTest() {
+		Book book = new Book();
+		book.setId(1);
+		book.setTitle("title");
+		book.setAuthorId(1);
+		Optional<Book> optional = Optional.empty();
+		when(bookRepositoryMock.findByIdAndAuthorId(book.getId(), book.getAuthorId())).thenReturn(optional);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookService.updateBook(book);
+		});
+
+	}
+
+	@Test
 	void updateBookExceptionTest() {
 		Book book = new Book();
 		book.setId(1);
 		book.setAuthorId(1);
-		Optional<Book> optional = Optional.empty();
-		when(bookRepositoryMock.findByTitleAndAuthorId("title", 1)).thenReturn(optional);
+		book.setTitle("title");
+		Optional<Book> optional = Optional.of(book);
+		when(bookRepositoryMock.findByIdAndAuthorId(book.getId(), book.getAuthorId())).thenReturn(optional);
+		Book book1 = new Book();
+		book1.setId(2);
+		book1.setAuthorId(1);
+		book.setTitle("title");
+		Optional<Book> optional1 = Optional.of(book1);
 
-		Assertions.assertThrows(RequestNotFounException.class, () -> {
+		when(bookRepositoryMock.findByTitleAndAuthorId(book.getTitle(), book.getAuthorId())).thenReturn(optional1);
+
+		Assertions.assertThrows(InvalidRequestException.class, () -> {
 			bookService.updateBook(book);
 		});
 
@@ -191,6 +217,102 @@ class BookServiceTest {
 
 		Assertions.assertThrows(RequestNotFounException.class, () -> {
 			bookService.getByRequest("Category", "Title", 1, 4.0, "Publisher");
+		});
+	}
+
+	@Test
+	void getBooksByAuthorTest() {
+
+		Book book = new Book();
+		book.setId(1);
+		book.setAuthorId(1);
+		book.setCategory("Category");
+		book.setTitle("Title");
+		book.setPrice(4.0);
+		book.setPublisher("Publisher");
+		List<Book> books = List.of(book);
+		when(bookRepositoryMock.findByAuthorId(book.getAuthorId())).thenReturn(books);
+
+		Assertions.assertEquals(books, bookService.getBooksByAuthor(book.getAuthorId()));
+
+	}
+
+	@Test
+	void getBooksByAuthorExceptionTest() {
+
+		Book book = new Book();
+		book.setId(1);
+		book.setAuthorId(1);
+		List<Book> books = List.of();
+		when(bookRepositoryMock.findByAuthorId(book.getAuthorId())).thenReturn(books);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookService.getBooksByAuthor(book.getAuthorId());
+		});
+	}
+
+	@Test
+	void getBookByAuthorBookIdTest() {
+
+		Book book = new Book();
+		book.setId(1);
+		book.setAuthorId(1);
+		book.setCategory("Category");
+		book.setTitle("Title");
+		book.setPrice(4.0);
+		book.setPublisher("Publisher");
+		Optional<Book> optional = Optional.of(book);
+		when(bookRepositoryMock.findByIdAndAuthorId(book.getId(), book.getAuthorId())).thenReturn(optional);
+
+		Assertions.assertEquals(book, bookService.getBookByAuthorBookId(book.getAuthorId(),book.getId()));
+
+	}
+
+	@Test
+	void getBookByAuthorBookIdExceptionTest() {
+
+		Book book = new Book();
+		book.setId(1);
+		book.setAuthorId(1);
+		book.setCategory("Category");
+		book.setTitle("Title");
+		book.setPrice(4.0);
+		book.setPublisher("Publisher");
+		Optional<Book> optional = Optional.empty();
+		when(bookRepositoryMock.findByIdAndAuthorId(book.getId(), book.getAuthorId())).thenReturn(optional);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookService.getBookByAuthorBookId(book.getAuthorId(),book.getId());
+		});
+	}
+
+	@Test
+	void getListBookResTest() {
+
+		Book book = new Book();
+		book.setId(1);
+		book.setAuthorId(1);
+		book.setCategory("Category");
+		book.setTitle("Title");
+		book.setPrice(4.0);
+		book.setPublisher("Publisher");
+		List<Book> books = List.of(book);
+		when(bookRepositoryMock.findAllActive()).thenReturn(books);
+
+		SearchBookResponse searchBookResponse = new SearchBookResponse();
+
+		Assertions.assertEquals(searchBookResponse, bookService.getListBookRes());
+
+	}
+
+	@Test
+	void getListBookResExceptionTest() {
+
+		List<Book> books = List.of();
+		when(bookRepositoryMock.findAllActive()).thenReturn(books);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookService.getListBookRes();
 		});
 	}
 

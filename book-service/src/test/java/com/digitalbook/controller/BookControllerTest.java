@@ -53,9 +53,7 @@ class BookControllerTest {
 		mockMvc.perform(post("/api/book/save").contentType(MediaType.APPLICATION_JSON).content(
 				"{ \"logo\": \"logo\", \"title\": \"title\",\"category\":\"category\" ,\"price\":4.0 ,\"authorId\":1,\"publisher\":\"publisher\",\"publishedDate\":\"2022-03-31\","
 						+ "\"content\":\"content\",\"active\":true}")
-				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.message").value("Book registered successfully!"));
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 
 	}
 
@@ -95,6 +93,11 @@ class BookControllerTest {
 	}
 
 	@Test
+	void getBooksByAuthorBookIdTest() throws Exception {
+		mockMvc.perform(get("/api/book/author/0/book/6").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+	}
+
+	@Test
 	void getByRequestTest() throws Exception {
 		when(bookServiceMock.getByRequest("category", "title", 1, 4.0, "publisher"))
 				.thenReturn(List.of(this.getObject()));
@@ -102,6 +105,16 @@ class BookControllerTest {
 		mockMvc.perform(get("/api/book/search?category=category&title=title&author=1&price=4.0&publisher=publisher"))
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
+	}
+
+	@Test
+	void getBooksByAuthorTest() throws Exception {
+		mockMvc.perform(get("/api/book/get-all/6").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+	}
+
+	@Test
+	void getListBookResTest() throws Exception {
+		mockMvc.perform(get("/api/book/get-all/books").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	public BookResponse getObject() {
