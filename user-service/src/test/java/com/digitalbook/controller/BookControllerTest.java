@@ -30,6 +30,7 @@ import com.digitalbook.payload.request.Book;
 import com.digitalbook.payload.request.BookSub;
 import com.digitalbook.payload.response.BookResponse;
 import com.digitalbook.payload.response.MessageResponse;
+import com.digitalbook.payload.response.SearchBookResponse;
 import com.digitalbook.restapi.service.BookRestApiService;
 import com.digitalbook.util.ConstantValueUtil;
 
@@ -53,17 +54,14 @@ class BookControllerTest {
 	@Test
 	void createBookTest() throws Exception {
 
-		ResponseEntity<Integer> response = ResponseEntity.status(HttpStatus.CREATED)
-				.body(1);
+		ResponseEntity<Integer> response = ResponseEntity.status(HttpStatus.CREATED).body(1);
 
 		when(bookRestApiServiceMock.createBook(any(Book.class))).thenReturn(response);
 
 		mockMvc.perform(post("/api/v1/digitalbooks/author/1/books").contentType(MediaType.APPLICATION_JSON).content(
 				"{ \"logo\": \"logo\", \"title\": \"title\",\"category\":\"category\" ,\"price\":4.0 ,\"publisher\":\"publisher\",\"publishedDate\":\"2022-03-31\","
 						+ "\"content\":\"content\",\"active\":true}")
-				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.message").value("Book registered successfully!"));
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
 
 	}
 
@@ -113,9 +111,30 @@ class BookControllerTest {
 
 	}
 
+	@WithMockUser(roles = { "AUTHOR" })
+	@Test
+	void getBooksByAuthorTest() throws Exception {
+		ResponseEntity<List<BookResponse>> response = ResponseEntity.ok(List.of());
+		when(bookRestApiServiceMock.getBooksByAuthor(1)).thenReturn(response);
+
+		mockMvc.perform(get("/api/v1/digitalbooks/author/1/books")).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+	}
+
+	@WithMockUser(roles = { "AUTHOR" })
+	@Test
+	void getBooksByAuthorAndBookIdTest() throws Exception {
+		ResponseEntity<Book> response = ResponseEntity.ok(new Book());
+		when(bookRestApiServiceMock.getBooksByAuthorAndBookId(1, 2)).thenReturn(response);
+
+		mockMvc.perform(get("/api/v1/digitalbooks/author/1/books/1")).andExpect(status().isOk());
+
+	}
+
 	@WithMockUser(roles = { "AUTHOR", "GUEST", "READER" })
 	@Test
-	void getByRequestTest() throws Exception {
+	void searchBooksTest() throws Exception {
 		ResponseEntity<List<BookResponse>> response = ResponseEntity.ok(List.of());
 		when(bookRestApiServiceMock.searchBook("category", "title", 1, 4.0, "publisher")).thenReturn(response);
 
@@ -125,19 +144,94 @@ class BookControllerTest {
 
 	}
 
+	@WithMockUser(roles = { "AUTHOR", "GUEST", "READER" })
+	@Test
+	void searchBooksV2Test() throws Exception {
+		ResponseEntity<List<BookResponse>> response = ResponseEntity.ok(List.of());
+		when(bookRestApiServiceMock.searchBookV2("category", "title", "author", 4.0, "publisher")).thenReturn(response);
+
+		mockMvc.perform(get(
+				"/api/v1/digitalbooks/v2/search?category=category&title=title&author=1&price=4.0&publisher=publisher"))
+				.andExpect(status().isOk());
+
+	}
+
 	@WithMockUser(roles = "READER")
 	@Test
 	void subscribeBookTest() throws Exception {
 
-		ResponseEntity<Integer> response = ResponseEntity.status(HttpStatus.CREATED)
-				.body(1);
+		ResponseEntity<Integer> response = ResponseEntity.status(HttpStatus.CREATED).body(1);
 
 		when(bookRestApiServiceMock.subscribeBook(any(BookSub.class))).thenReturn(response);
 
 		mockMvc.perform(post("/api/v1/digitalbooks/readers/2/subscribe").contentType(MediaType.APPLICATION_JSON)
-				.content("{ \"bookId\": 1, \"readerId\": 2,\"active\":true}")).andExpect(status().isCreated())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.message").value("Book subscribed successfully!"));
+				.content("{ \"bookId\": 1, \"readerId\": 2,\"active\":true}")).andExpect(status().isCreated());
+
+	}
+
+	@WithMockUser(roles = "READER")
+	@Test
+	void getAllReaderBookTest() throws Exception {
+
+		ResponseEntity<List<BookResponse>> response = ResponseEntity.status(HttpStatus.OK).body(List.of());
+
+		when(bookRestApiServiceMock.getAllReaderBook("email@gmail.com")).thenReturn(response);
+
+		mockMvc.perform(
+				get("/api/v1/digitalbooks/readers/email@gmail.com/books").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+	}
+
+	@WithMockUser(roles = "READER")
+	@Test
+	void getReaderBookTest() throws Exception {
+
+		ResponseEntity<Book> response = ResponseEntity.status(HttpStatus.CREATED).body(new Book());
+
+		when(bookRestApiServiceMock.getBookByReaderAndSubId("email@gmail.com", 1)).thenReturn(response);
+
+		mockMvc.perform(
+				get("/api/v1/digitalbooks/readers/email@gmail.com/books").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+	}
+
+	@WithMockUser(roles = "READER")
+	@Test
+	void getReaderBookReadTest() throws Exception {
+
+		ResponseEntity<String> response = ResponseEntity.ok("");
+
+		when(bookRestApiServiceMock.getContentByReaderAndSubId("email@gmail.com", 1)).thenReturn(response);
+
+		mockMvc.perform(
+				get("/api/v1/digitalbooks/readers/email@gmail.com/books/1/read").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+	}
+
+	@WithMockUser(roles = "READER")
+	@Test
+	void cancelSubByReaderAndSubIdTest() throws Exception {
+		ResponseEntity<MessageResponse> response = ResponseEntity.ok(new MessageResponse("Cancel subscription successfully!"));
+
+		when(bookRestApiServiceMock.cancelByReaderAndSubId("email@gmail.com",1)).thenReturn(response);
+		
+		mockMvc.perform(post("/api/v1/digitalbooks/readers/emai@gmail.com/books/1/cancel-subscription").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+
+	@WithMockUser(roles = "READER")
+	@Test
+	void getAllBookTest() throws Exception {
+
+		ResponseEntity<SearchBookResponse> response = ResponseEntity.ok(new SearchBookResponse());
+
+		when(bookRestApiServiceMock.getAllBook()).thenReturn(response);
+
+		mockMvc.perform(get("/api/v1/digitalbooks/get-all/books").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
 
 	}
 

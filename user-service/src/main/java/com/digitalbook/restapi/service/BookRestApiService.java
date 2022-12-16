@@ -298,9 +298,8 @@ public class BookRestApiService {
 
 			Book book = response.getBody();
 			Optional<User> author = userRepository.findById((long) book.getAuthorId());
-			BookResponse bookResponse = new BookResponse();
 			if (author.isPresent()) {
-//				bookResponse.getSubId()
+				book.setAuthor(author.get().getUsername());
 			}
 			return response;
 		} catch (HttpClientErrorException e) {

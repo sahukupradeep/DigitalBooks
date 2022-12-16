@@ -29,6 +29,8 @@ public class Book implements Serializable {
 
 	private Integer authorId;
 
+	private String author;
+
 	@NotEmpty
 	private String publisher;
 
@@ -90,6 +92,14 @@ public class Book implements Serializable {
 
 	public void setAuthorId(Integer authorId) {
 		this.authorId = authorId;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 	public String getPublisher() {

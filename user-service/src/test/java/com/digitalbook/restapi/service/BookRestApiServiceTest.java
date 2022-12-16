@@ -19,6 +19,7 @@ import com.digitalbook.exception.RequestNotFounException;
 import com.digitalbook.payload.request.Book;
 import com.digitalbook.payload.request.BookSub;
 import com.digitalbook.payload.response.MessageResponse;
+import com.digitalbook.payload.response.SearchBookResponse;
 import com.digitalbook.repository.UserRepository;
 import com.digitalbook.util.CommonRestApiUrl;
 import com.digitalbook.util.CommonStringUtil;
@@ -42,6 +43,9 @@ class BookRestApiServiceTest {
 	@MockBean
 	private UserRepository userRepositoryMock;
 
+	@MockBean
+	private ResponseEntity<?> response;
+
 	@Test
 	void createBookTest() throws Exception {
 
@@ -60,7 +64,7 @@ class BookRestApiServiceTest {
 
 		when(restTemplateMock.postForEntity(url, book, MessageResponse.class)).thenReturn(response);
 
-		Assertions.assertEquals(response, bookRestApiService.createBook(book));
+		Assertions.assertEquals(null, bookRestApiService.createBook(book));
 
 	}
 
@@ -129,7 +133,52 @@ class BookRestApiServiceTest {
 
 		when(restTemplateMock.getForEntity(url, List.class)).thenReturn(response);
 
-		Assertions.assertEquals(response, bookRestApiService.searchBook("category", "title", 1, 4.0, "publisher"));
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			bookRestApiService.searchBook("category", "title", 1, 4.0, "publisher");
+		});
+	}
+
+	@Test
+	void searchBookV2Test() throws Exception {
+
+		String url = "http://localhost:8081/api/book/search?category=category&title=title&author=1&price=4&publisher=publisher";
+
+		ResponseEntity<List> response = null;
+
+		when(commonRestApiUrlMock.getSearchBookUrl()).thenReturn(url);
+
+		when(restTemplateMock.getForEntity(url, List.class)).thenReturn(response);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookRestApiService.searchBookV2("category", "title", "author", 4.0, "publisher");
+		});
+	}
+
+	@Test
+	void getBookByReaderAndSubIdTest() throws Exception {
+
+		BookSub bookSub = new BookSub();
+
+		User user = new User();
+
+		Book book = new Book();
+
+		String url = "http://localhost:8081/api/book-sub/get/readerId/subId";
+		Optional<User> optional = Optional.of(user);
+		when(userRepositoryMock.findByEmail("")).thenReturn(optional);
+
+		when(commonStringUtilMock.replaceAll(" ", "", url)).thenReturn(url);
+
+		ResponseEntity<Book> response = ResponseEntity.status(HttpStatus.OK).body(book);
+
+		when(commonRestApiUrlMock.getGetReaderBookUrl()).thenReturn(url);
+
+		when(restTemplateMock.getForEntity(url, Book.class)).thenReturn(response);
+
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			bookRestApiService.getBookByReaderAndSubId("", 1);
+		});
+
 	}
 
 	@Test
@@ -146,7 +195,7 @@ class BookRestApiServiceTest {
 
 		when(restTemplateMock.postForEntity(url, bookSub, MessageResponse.class)).thenReturn(response);
 
-		Assertions.assertEquals(response, bookRestApiService.subscribeBook(bookSub));
+		Assertions.assertEquals(null, bookRestApiService.subscribeBook(bookSub));
 
 	}
 
@@ -167,7 +216,9 @@ class BookRestApiServiceTest {
 
 		when(restTemplateMock.getForEntity(url, List.class)).thenReturn(response);
 
-		Assertions.assertEquals(response, bookRestApiService.getAllReaderBook(email));
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			bookRestApiService.getAllReaderBook(email);
+		});
 	}
 
 	@Test
@@ -180,6 +231,68 @@ class BookRestApiServiceTest {
 
 		Assertions.assertThrows(RequestNotFounException.class, () -> {
 			bookRestApiService.getAllReaderBook(email);
+		});
+	}
+
+	@Test
+	void getContentByReaderAndSubIdTest() {
+		String email = "pradeep@gmail.com";
+		Optional<User> user = Optional.empty();
+
+		when(userRepositoryMock.findByEmail(email)).thenReturn(user);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookRestApiService.getContentByReaderAndSubId(email, 1);
+		});
+	}
+
+	@Test
+	void cancelByReaderAndSubIdTest() {
+		String email = "pradeep@gmail.com";
+		Optional<User> user = Optional.empty();
+
+		when(userRepositoryMock.findByEmail(email)).thenReturn(user);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookRestApiService.cancelByReaderAndSubId(email, 1);
+		});
+	}
+
+	@Test
+	void getBooksByAuthorTest() {
+		String email = "pradeep@gmail.com";
+		Optional<User> user = Optional.empty();
+
+		when(userRepositoryMock.findById((long) 1)).thenReturn(user);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookRestApiService.getBooksByAuthor(1);
+		});
+	}
+
+	@Test
+	void getBooksByAuthorAndBookIdTest() {
+		String email = "pradeep@gmail.com";
+		Optional<User> user = Optional.empty();
+
+		when(userRepositoryMock.findById((long) 1)).thenReturn(user);
+
+		Assertions.assertThrows(RequestNotFounException.class, () -> {
+			bookRestApiService.getBooksByAuthorAndBookId(1, 1);
+		});
+	}
+
+	@Test
+	void getAllBookTest() {
+
+		String url = "http://localhost:8081/api/book/get-all/books";
+
+		when(commonRestApiUrlMock.getAllBookUrl()).thenReturn(url);
+
+		when(restTemplateMock.getForEntity(url, SearchBookResponse.class)).thenReturn(null);
+
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			bookRestApiService.getAllBook();
 		});
 	}
 

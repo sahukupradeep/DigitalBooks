@@ -27,28 +27,28 @@ public class ControllerExceptionHandler {
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST) // 400
 	@ExceptionHandler(InvalidRequestException.class)
-	public MessageResponse handleBadRequest(InvalidRequestException ex) {
+	public String handleBadRequest(InvalidRequestException ex) {
 		logger.error(ex.getMessage());
-		return new MessageResponse(ex.getMessage());
+		return ex.getMessage();
 	}
 
 	@ResponseStatus(HttpStatus.NOT_FOUND) // 404
 	@ExceptionHandler(RoleNotFoundException.class)
-	public MessageResponse handleNotFound(RoleNotFoundException rnf) {
+	public String handleNotFound(RoleNotFoundException rnf) {
 		logger.error("Requested Role not found");
-		return new MessageResponse("Error : Requested Role not found!");
+		return "Error : Requested Role not found!";
 	}
 
 	@ResponseStatus(HttpStatus.NOT_FOUND) // 404
 	@ExceptionHandler(RequestNotFounException.class)
-	public MessageResponse handleNotFound(RequestNotFounException rnf) {
+	public String handleNotFound(RequestNotFounException rnf) {
 		logger.error(rnf.getMessage());
-		return new MessageResponse(rnf.getMessage());
+		return rnf.getMessage();
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST) // 400
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public MessageResponse handleGeneralError(MethodArgumentNotValidException ex) {
+	public String handleGeneralError(MethodArgumentNotValidException ex) {
 
 		logger.error("Argument not valid " + ex);
 
@@ -61,30 +61,30 @@ public class ControllerExceptionHandler {
 
 		});
 
-		return new MessageResponse(ex.getMessage());
+		return ex.getMessage();
 	}
-	
+
 	@ResponseStatus(HttpStatus.UNAUTHORIZED) // 401
 	@ExceptionHandler(AccessDeniedException.class)
-	public MessageResponse handleGeneralError(AccessDeniedException ex) {
+	public String handleGeneralError(AccessDeniedException ex) {
 
 		logger.error("Error :" + ex);
-		return new MessageResponse("Error : " + ex.getMessage());
+		return "Error : " + ex.getMessage();
 	}
-	
+
 	@ResponseStatus(HttpStatus.FORBIDDEN) // 403
 	@ExceptionHandler(BadCredentialsException.class)
-	public MessageResponse handleGeneralError(BadCredentialsException ex) {
+	public String handleGeneralError(BadCredentialsException ex) {
 
 		logger.error("Error :" + ex);
-		return new MessageResponse("Error : " + ex.getMessage());
+		return "Error : " + ex.getMessage();
 	}
 
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
 	@ExceptionHandler(Exception.class)
-	public MessageResponse handleGeneralError(Exception ex) {
+	public String handleGeneralError(Exception ex) {
 
 		logger.error("An error occurred procesing request" + ex);
-		return new MessageResponse("Error : An error occurred procesing request " + ex.getMessage());
+		return "Error : An error occurred procesing request " + ex.getMessage();
 	}
 }
